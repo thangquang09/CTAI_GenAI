@@ -30,26 +30,6 @@ from tqdm import tqdm
 from vectorstore.build_retriever import build_retriever
 
 
-# ==================== DEVICE DETECTION ====================
-
-def get_device() -> str:
-    """
-    Tự động detect device (cuda/mps/cpu) cho embedding model.
-    
-    Returns:
-        str: Device name - "cuda", "mps", hoặc "cpu"
-    """
-    try:
-        import torch
-        if torch.cuda.is_available():
-            return "cuda"
-        elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-            return "mps"
-    except ImportError:
-        pass
-    return "cpu"
-
-
 # ==================== PIPELINE FUNCTIONS ====================
 
 def run_chunking_pipeline(
@@ -139,10 +119,6 @@ def run_vectorstore_pipeline(
     print("STEP 2: BUILD VECTOR STORE")
     print("="*80)
     
-    # Auto-detect device
-    device = get_device()
-    print(f"Embedding device: {device}")
-    
     # Build command
     cmd = [
         sys.executable,
@@ -151,7 +127,6 @@ def run_vectorstore_pipeline(
         "--out_dir", qdrant_path,
         "--embedding_model", embedding_model,
         "--batch_size", str(batch_size),
-        "--device", device,
     ]
     
     if collection_name:
@@ -205,17 +180,12 @@ def get_retriever(
     print("STEP 3: BUILD RETRIEVER")
     print("="*80)
     
-    # Auto-detect device
-    device = get_device()
-    print(f"Embedding device: {device}")
-    
     retriever = build_retriever(
         collection_name=collection_name,
         qdrant_path=qdrant_path,
         embedding_model=embedding_model,
         search_type=search_type,
         search_kwargs={"k": top_k},
-        device=device,
     )
     
     return retriever
@@ -992,28 +962,6 @@ def main():
         print("[ERROR] --collection is required for mode=from_collection")
         sys.exit(1)
     
-    # Auto-detect và hiển thị device
-    device = get_device()
-    
-    print("\n" + "="*80)
-    print("DEVICE CONFIGURATION")
-    print("="*80)
-    print(f"Embedding device: {device}")
-    if device == "cuda":
-        try:
-            import torch
-            print(f"CUDA available: {torch.cuda.is_available()}")
-            if torch.cuda.is_available():
-                print(f"CUDA device: {torch.cuda.get_device_name(0)}")
-                print(f"CUDA memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
-        except ImportError:
-            print("⚠️  PyTorch not installed, cannot verify CUDA")
-    elif device == "mps":
-        print("Using Apple Metal Performance Shaders (MPS)")
-    else:
-        print("Using CPU (slowest option)")
-    print("="*80)
-    
     # Run pipeline to get retriever
     if args.mode == "full":
         retriever = run_full_pipeline(
@@ -1076,7 +1024,6 @@ def main():
     print("\n" + "="*80)
     print("FINAL EVALUATION SUMMARY")
     print("="*80)
-    print(f"Device used: {device}")
     print(f"Queries evaluated: {len(eval_data)}")
     print(f"Evaluation method: {args.eval_method}")
     print(f"Top-K: {args.top_k}")
