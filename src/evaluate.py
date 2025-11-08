@@ -30,6 +30,26 @@ from tqdm import tqdm
 from vectorstore.build_retriever import build_retriever
 
 
+# ==================== DEVICE DETECTION ====================
+
+def get_device() -> str:
+    """
+    Tự động detect device (cuda/mps/cpu) cho embedding model.
+    
+    Returns:
+        str: Device name - "cuda", "mps", hoặc "cpu"
+    """
+    try:
+        import torch
+        if torch.cuda.is_available():
+            return "cuda"
+        elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+            return "mps"
+    except ImportError:
+        pass
+    return "cpu"
+
+
 # ==================== PIPELINE FUNCTIONS ====================
 
 def run_chunking_pipeline(
@@ -119,6 +139,10 @@ def run_vectorstore_pipeline(
     print("STEP 2: BUILD VECTOR STORE")
     print("="*80)
     
+    # Auto-detect device
+    device = get_device()
+    print(f"Embedding device: {device}")
+    
     # Build command
     cmd = [
         sys.executable,
@@ -127,6 +151,7 @@ def run_vectorstore_pipeline(
         "--out_dir", qdrant_path,
         "--embedding_model", embedding_model,
         "--batch_size", str(batch_size),
+        "--device", device,
     ]
     
     if collection_name:
@@ -180,12 +205,17 @@ def get_retriever(
     print("STEP 3: BUILD RETRIEVER")
     print("="*80)
     
+    # Auto-detect device
+    device = get_device()
+    print(f"Embedding device: {device}")
+    
     retriever = build_retriever(
         collection_name=collection_name,
         qdrant_path=qdrant_path,
         embedding_model=embedding_model,
         search_type=search_type,
         search_kwargs={"k": top_k},
+        device=device,
     )
     
     return retriever
@@ -194,14 +224,14 @@ def get_retriever(
 # ==================== EVALUATION FUNCTIONS ====================
 
 def load_evaluation_dataset(
-    split: str = "wixqa_expertwritten",
+    config_name: str = "wixqa_expertwritten",
     max_queries: int = 0,
 ) -> List[Dict[str, Any]]:
     """
     Load WixQA evaluation dataset (QA pairs with ground truth article_ids).
     
     Args:
-        split: Dataset split name (default: "wixqa_expertwritten")
+        config_name: Dataset config name (wixqa_expertwritten or wixqa_simulated)
         max_queries: Giới hạn số query (0 = toàn bộ)
     
     Returns:
@@ -211,7 +241,7 @@ def load_evaluation_dataset(
     print("LOADING EVALUATION DATASET")
     print("="*80)
     
-    dataset = load_dataset("Wix/WixQA", split, split="train")
+    dataset = load_dataset("Wix/WixQA", config_name, split="train")
     
     # Convert to list of dicts
     eval_data = []
@@ -225,7 +255,7 @@ def load_evaluation_dataset(
     if max_queries > 0:
         eval_data = eval_data[:max_queries]
     
-    print(f"Loaded {len(eval_data)} queries from split: {split}")
+    print(f"Loaded {len(eval_data)} queries from config: {config_name}")
     print("="*80)
     
     return eval_data
@@ -269,6 +299,38 @@ def aggregate_chunk_scores(
     return aggregated
 
 
+def compute_ndcg_at_k(
+    ranked_articles: List[str],
+    gold_articles: Set[str],
+    k: int,
+) -> float:
+    """
+    Compute Normalized Discounted Cumulative Gain @K.
+    
+    Args:
+        ranked_articles: List of article IDs in ranked order
+        gold_articles: Set of ground truth article IDs
+        k: Cutoff position
+    
+    Returns:
+        float: nDCG@K score
+    """
+    # DCG@K
+    dcg = 0.0
+    for i, article_id in enumerate(ranked_articles[:k], start=1):
+        rel = 1 if article_id in gold_articles else 0
+        dcg += rel / np.log2(i + 1)
+    
+    # IDCG@K (ideal DCG)
+    ideal_k = min(k, len(gold_articles))
+    idcg = sum(1.0 / np.log2(i + 1) for i in range(1, ideal_k + 1))
+    
+    if idcg == 0:
+        return 0.0
+    
+    return dcg / idcg
+
+
 def evaluate_document_level(
     retriever: BaseRetriever,
     eval_data: List[Dict[str, Any]],
@@ -287,7 +349,7 @@ def evaluate_document_level(
         agg_mode: Aggregation mode - "max", "sum", "mean"
     
     Returns:
-        Dict[str, float]: Metrics - hit_rate@K, recall@K, precision@K, mrr@K
+        Dict[str, float]: Metrics - hit_rate@K, recall@K, precision@K, mrr@K, ndcg@K, coverage@K
     """
     print("\n" + "="*80)
     print("EVALUATING: DOCUMENT-LEVEL (CHUNK AGGREGATION)")
@@ -298,27 +360,27 @@ def evaluate_document_level(
     recall_scores = []
     precision_scores = []
     rr_scores = []
+    ndcg_scores = []
+    coverage_scores = []
     
-    # Temporarily override retriever's k
-    original_k = retriever.search_kwargs.get("k", 5)
-    retriever.search_kwargs["k"] = retrieve_k
+    # Get vectorstore to use similarity_search_with_score
+    vectorstore = retriever.vectorstore
     
     for item in tqdm(eval_data, desc="Evaluating queries"):
         query = item["question"]
         gold_articles = set(item["article_ids"])
         
-        # Retrieve chunks
-        retrieved_docs = retriever.invoke(query)
+        # Retrieve chunks with REAL similarity scores
+        retrieved_docs_with_scores = vectorstore.similarity_search_with_score(
+            query, k=retrieve_k
+        )
         
         # Extract (article_id, score) from chunks
         chunk_scores = []
-        for doc in retrieved_docs:
+        for doc, score in retrieved_docs_with_scores:
             article_id = doc.metadata.get("article_id", "")
-            # Qdrant similarity search returns docs without scores in metadata
-            # We'll use position as inverse score for now
-            # Ideally, use similarity_score_threshold or custom retriever
-            score = 1.0 / (len(chunk_scores) + 1)  # inverse rank as score
-            chunk_scores.append((article_id, score))
+            if article_id:  # Skip if no article_id
+                chunk_scores.append((article_id, score))
         
         # Aggregate chunks -> articles
         ranked_articles = aggregate_chunk_scores(chunk_scores, mode=agg_mode)
@@ -326,18 +388,21 @@ def evaluate_document_level(
         # Get top-K articles
         top_k_articles = [aid for aid, _ in ranked_articles[:top_k]]
         
-        # Metrics @K
+        # Coverage@K: số gold articles được tìm thấy
+        covered_articles = set(top_k_articles).intersection(gold_articles)
+        coverage = len(covered_articles)
+        coverage_scores.append(coverage)
+        
         # Hit Rate @K: 1 nếu có ít nhất 1 bài đúng trong top-K
-        hit = 1 if any(aid in gold_articles for aid in top_k_articles) else 0
+        hit = 1 if coverage > 0 else 0
         hit_scores.append(hit)
         
         # Recall @K: tỷ lệ bài đúng được tìm thấy / tổng số bài đúng
-        num_correct_found = len([aid for aid in top_k_articles if aid in gold_articles])
-        recall = num_correct_found / len(gold_articles) if gold_articles else 0
+        recall = coverage / len(gold_articles) if gold_articles else 0
         recall_scores.append(recall)
         
         # Precision @K: tỷ lệ bài đúng / K
-        precision = num_correct_found / top_k if top_k > 0 else 0
+        precision = coverage / top_k if top_k > 0 else 0
         precision_scores.append(precision)
         
         # MRR @K: 1/rank của bài đúng đầu tiên
@@ -347,9 +412,10 @@ def evaluate_document_level(
                 rr = 1.0 / rank
                 break
         rr_scores.append(rr)
-    
-    # Restore original k
-    retriever.search_kwargs["k"] = original_k
+        
+        # nDCG @K
+        ndcg = compute_ndcg_at_k(top_k_articles, gold_articles, top_k)
+        ndcg_scores.append(ndcg)
     
     # Macro-average
     metrics = {
@@ -357,6 +423,8 @@ def evaluate_document_level(
         f"recall@{top_k}": np.mean(recall_scores),
         f"precision@{top_k}": np.mean(precision_scores),
         f"mrr@{top_k}": np.mean(rr_scores),
+        f"ndcg@{top_k}": np.mean(ndcg_scores),
+        f"coverage@{top_k}": np.mean(coverage_scores),
     }
     
     print("\n" + "-"*80)
@@ -366,6 +434,42 @@ def evaluate_document_level(
     print("-"*80)
     
     return metrics
+
+
+def detect_metadata_key(
+    collection_name: str,
+    client,
+) -> str:
+    """
+    Tự động phát hiện metadata key structure trong Qdrant collection.
+    
+    Args:
+        collection_name: Tên collection
+        client: Qdrant client
+    
+    Returns:
+        str: "metadata.article_id" hoặc "article_id"
+    """
+    # Lấy 1 point bất kỳ để kiểm tra cấu trúc
+    results = client.scroll(
+        collection_name=collection_name,
+        limit=1,
+        with_payload=True,
+    )
+    
+    if not results[0]:
+        raise ValueError(f"Collection {collection_name} is empty!")
+    
+    point = results[0][0]
+    payload = point.payload
+    
+    # Kiểm tra cấu trúc
+    if "metadata" in payload and "article_id" in payload.get("metadata", {}):
+        return "metadata.article_id"
+    elif "article_id" in payload:
+        return "article_id"
+    else:
+        raise ValueError(f"Cannot find article_id in payload structure: {payload.keys()}")
 
 
 def build_gold_embeddings(
@@ -390,6 +494,11 @@ def build_gold_embeddings(
     vectorstore = retriever.vectorstore
     client = vectorstore.client
     
+    # Auto-detect metadata key structure
+    print("Detecting metadata key structure...")
+    metadata_key = detect_metadata_key(collection_name, client)
+    print(f"Using filter key: {metadata_key}")
+    
     gold_embeddings = {}
     
     for article_id in tqdm(article_ids, desc="Building gold embeddings"):
@@ -400,7 +509,7 @@ def build_gold_embeddings(
             scroll_filter=Filter(
                 must=[
                     FieldCondition(
-                        key="metadata.article_id",
+                        key=metadata_key,
                         match=MatchValue(value=article_id)
                     )
                 ]
@@ -454,7 +563,7 @@ def evaluate_chunk_level_semantic(
         cosine_threshold: Threshold để coi chunk là "correct"
     
     Returns:
-        Dict[str, float]: Metrics - hit_rate@K, recall@K, precision@K, mrr@K
+        Dict[str, float]: Metrics - hit_rate@K, recall@K, precision@K, mrr@K, ndcg@K, coverage@K
     """
     print("\n" + "="*80)
     print("EVALUATING: CHUNK-LEVEL SEMANTIC (COSINE SIMILARITY)")
@@ -474,33 +583,34 @@ def evaluate_chunk_level_semantic(
     )
     print(f"[SUCCESS] Built {len(gold_embeddings)} gold embeddings")
     
-    # Get embedding function from retriever
+    # Get vectorstore and client
     vectorstore = retriever.vectorstore
-    embedding_function = vectorstore.embeddings
+    client = vectorstore.client
     
     hit_scores = []
     recall_scores = []
     precision_scores = []
     rr_scores = []
-    
-    # Temporarily override retriever's k
-    original_k = retriever.search_kwargs.get("k", 5)
-    retriever.search_kwargs["k"] = top_k
+    ndcg_scores = []
+    coverage_scores = []
     
     # Debug counters
     debug_stats = {
         "total_chunks": 0,
-        "embedded_chunks": 0,
+        "retrieved_vectors": 0,
         "max_similarity": 0.0,
         "min_similarity": 1.0,
+        "similarity_distribution": [],
     }
     
     for item in tqdm(eval_data, desc="Evaluating queries"):
         query = item["question"]
         gold_articles = set(item["article_ids"])
         
-        # Retrieve chunks
-        retrieved_docs = retriever.invoke(query)
+        # Retrieve chunks with scores (để lấy được chunk IDs)
+        retrieved_docs_with_scores = vectorstore.similarity_search_with_score(
+            query, k=top_k
+        )
         
         # Get gold embeddings for this query
         gold_vecs = [gold_embeddings.get(aid) for aid in gold_articles if aid in gold_embeddings]
@@ -511,23 +621,41 @@ def evaluate_chunk_level_semantic(
             recall_scores.append(0)
             precision_scores.append(0)
             rr_scores.append(0)
+            ndcg_scores.append(0)
+            coverage_scores.append(0)
             continue
         
         # Check correctness for each retrieved chunk
         correct_flags = []
         chunk_article_ids = []
         
-        for doc in retrieved_docs:
+        for doc, score in retrieved_docs_with_scores:
             article_id = doc.metadata.get("article_id", "")
+            chunk_id = doc.metadata.get("chunk_id", "")
             chunk_article_ids.append(article_id)
             debug_stats["total_chunks"] += 1
             
-            # Embed retrieved chunk text to get its vector
             try:
-                chunk_text = doc.page_content
-                # Embed the text using the same embedding model
-                chunk_vec = np.array(embedding_function.embed_query(chunk_text))
-                debug_stats["embedded_chunks"] += 1
+                # Lấy vector từ Qdrant thay vì re-embed
+                if chunk_id:
+                    # Retrieve vector by chunk_id (UUID)
+                    point = client.retrieve(
+                        collection_name=collection_name,
+                        ids=[chunk_id],
+                        with_vectors=True,
+                    )
+                    
+                    if point and len(point) > 0:
+                        chunk_vec = np.array(point[0].vector)
+                        debug_stats["retrieved_vectors"] += 1
+                    else:
+                        # Fallback: re-embed nếu không lấy được vector
+                        chunk_text = doc.page_content
+                        chunk_vec = np.array(vectorstore.embeddings.embed_query(chunk_text))
+                else:
+                    # No chunk_id, fallback to re-embed
+                    chunk_text = doc.page_content
+                    chunk_vec = np.array(vectorstore.embeddings.embed_query(chunk_text))
                 
                 # Compute max cosine similarity with gold embeddings
                 max_sim = max(cosine_similarity(chunk_vec, gold_vec) for gold_vec in gold_vecs)
@@ -535,14 +663,24 @@ def evaluate_chunk_level_semantic(
                 # Update debug stats
                 debug_stats["max_similarity"] = max(debug_stats["max_similarity"], max_sim)
                 debug_stats["min_similarity"] = min(debug_stats["min_similarity"], max_sim)
+                debug_stats["similarity_distribution"].append(max_sim)
                 
                 is_correct = max_sim >= cosine_threshold
                 correct_flags.append(is_correct)
             except Exception as e:
                 # Debug: print first error
                 if debug_stats["total_chunks"] == 1:
-                    print(f"\n⚠️  Error embedding chunk: {e}")
+                    print(f"\n⚠️  Error retrieving/embedding chunk: {e}")
                 correct_flags.append(False)
+        
+        # Coverage@K: số gold articles được "cover" bởi chunks đúng
+        covered_articles = set()
+        for i in range(min(top_k, len(correct_flags))):
+            if correct_flags[i]:
+                covered_articles.add(chunk_article_ids[i])
+        
+        coverage = len(covered_articles.intersection(gold_articles))
+        coverage_scores.append(coverage)
         
         # Metrics @K (chunk-level semantic)
         # Hit Rate @K: có ít nhất 1 chunk đúng
@@ -550,12 +688,7 @@ def evaluate_chunk_level_semantic(
         hit_scores.append(hit)
         
         # Recall @K: số bài đúng được "cover" bởi chunks đúng / tổng số bài đúng
-        covered_articles = set()
-        for i in range(min(top_k, len(correct_flags))):
-            if correct_flags[i]:
-                covered_articles.add(chunk_article_ids[i])
-        
-        recall = len(covered_articles.intersection(gold_articles)) / len(gold_articles) if gold_articles else 0
+        recall = coverage / len(gold_articles) if gold_articles else 0
         recall_scores.append(recall)
         
         # Precision @K: số chunks đúng / K
@@ -569,17 +702,39 @@ def evaluate_chunk_level_semantic(
                 rr = 1.0 / (rank + 1)
                 break
         rr_scores.append(rr)
-    
-    # Restore original k
-    retriever.search_kwargs["k"] = original_k
+        
+        # nDCG @K: treat correct chunks as relevant (binary relevance)
+        # Convert correct_flags to ranked article list for nDCG
+        ranked_by_correctness = [
+            chunk_article_ids[i] for i in range(min(top_k, len(correct_flags)))
+            if correct_flags[i]
+        ]
+        ndcg = compute_ndcg_at_k(ranked_by_correctness, gold_articles, top_k)
+        ndcg_scores.append(ndcg)
     
     # Print debug stats
     print("\nDebug Statistics:")
     print(f"  Total chunks evaluated: {debug_stats['total_chunks']}")
-    print(f"  Chunks embedded: {debug_stats['embedded_chunks']}")
-    if debug_stats['embedded_chunks'] > 0:
+    print(f"  Vectors retrieved from Qdrant: {debug_stats['retrieved_vectors']}")
+    print(f"  Re-embedded chunks: {debug_stats['total_chunks'] - debug_stats['retrieved_vectors']}")
+    if debug_stats['retrieved_vectors'] > 0:
+        similarities = debug_stats['similarity_distribution']
         print(f"  Similarity range: [{debug_stats['min_similarity']:.4f}, {debug_stats['max_similarity']:.4f}]")
+        print(f"  Mean similarity: {np.mean(similarities):.4f}")
+        print(f"  Median similarity: {np.median(similarities):.4f}")
+        print(f"  Std similarity: {np.std(similarities):.4f}")
         print(f"  Threshold used: {cosine_threshold}")
+        
+        # Percentiles for threshold calibration
+        percentiles = [25, 50, 75, 90, 95]
+        print("\n  Similarity percentiles (for threshold calibration):")
+        for p in percentiles:
+            val = np.percentile(similarities, p)
+            print(f"    {p}th percentile: {val:.4f}")
+        
+        # Proportion above threshold
+        above_threshold = sum(1 for s in similarities if s >= cosine_threshold) / len(similarities)
+        print(f"\n  Chunks above threshold ({cosine_threshold}): {above_threshold:.2%}")
     
     # Macro-average
     metrics = {
@@ -587,6 +742,8 @@ def evaluate_chunk_level_semantic(
         f"recall@{top_k}_semantic": np.mean(recall_scores),
         f"precision@{top_k}_semantic": np.mean(precision_scores),
         f"mrr@{top_k}_semantic": np.mean(rr_scores),
+        f"ndcg@{top_k}_semantic": np.mean(ndcg_scores),
+        f"coverage@{top_k}_semantic": np.mean(coverage_scores),
     }
     
     print("\n" + "-"*80)
@@ -835,6 +992,28 @@ def main():
         print("[ERROR] --collection is required for mode=from_collection")
         sys.exit(1)
     
+    # Auto-detect và hiển thị device
+    device = get_device()
+    
+    print("\n" + "="*80)
+    print("DEVICE CONFIGURATION")
+    print("="*80)
+    print(f"Embedding device: {device}")
+    if device == "cuda":
+        try:
+            import torch
+            print(f"CUDA available: {torch.cuda.is_available()}")
+            if torch.cuda.is_available():
+                print(f"CUDA device: {torch.cuda.get_device_name(0)}")
+                print(f"CUDA memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
+        except ImportError:
+            print("⚠️  PyTorch not installed, cannot verify CUDA")
+    elif device == "mps":
+        print("Using Apple Metal Performance Shaders (MPS)")
+    else:
+        print("Using CPU (slowest option)")
+    print("="*80)
+    
     # Run pipeline to get retriever
     if args.mode == "full":
         retriever = run_full_pipeline(
@@ -897,6 +1076,7 @@ def main():
     print("\n" + "="*80)
     print("FINAL EVALUATION SUMMARY")
     print("="*80)
+    print(f"Device used: {device}")
     print(f"Queries evaluated: {len(eval_data)}")
     print(f"Evaluation method: {args.eval_method}")
     print(f"Top-K: {args.top_k}")

@@ -402,8 +402,11 @@ uv run python src/evaluate.py \
   --embedding_model "BAAI/bge-base-en-v1.5" \
   --eval_method both \
   --max_queries 100
-```
 
+# 5. Final
+uv run src/evaluate.py --mode from_collection --collection chunks_recursive_380_50_baai_bge_small_en_v1_5 --qdrant_path langchain_qdrant --embedding_model BAAI/bge-small-en-v1.5 --top_k 5 --max_queries 5 --eval_method both --retrieve_k 20 --agg_mode max --cosine_threshold 0.70
+
+```
 **Key Features**:
 - ✅ **2 evaluation methods**: Document-level (chunk aggregation) và Chunk-level semantic (cosine similarity)
 - ✅ **4 metrics**: Hit Rate, Recall, Precision, MRR (cho cả 2 methods)

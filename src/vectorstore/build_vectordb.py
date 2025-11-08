@@ -74,15 +74,21 @@ def build_qdrant_local(
     recreate: bool = False,
     batch_size: int = 64,
     use_grpc: bool = False,
+    device: str = "cpu",
 ):
     """
     Build Qdrant vector store locally using the new langchain-qdrant API.
     """
     os.makedirs(qdrant_path, exist_ok=True)
 
-    # Initialize embeddings
+    # Initialize embeddings với device config
+    model_kwargs = {"device": device}
+    encode_kwargs = {"normalize_embeddings": True}
+    
     embeddings = HuggingFaceEmbeddings(
-        model_name=embedding_model, encode_kwargs={"normalize_embeddings": True}
+        model_name=embedding_model,
+        model_kwargs=model_kwargs,
+        encode_kwargs=encode_kwargs,
     )
 
     # Delete collection if recreate flag is set
@@ -188,6 +194,13 @@ def parse_args():
     ap.add_argument(
         "--grpc", action="store_true", help="Dùng gRPC local (thường không cần)"
     )
+    ap.add_argument(
+        "--device",
+        type=str,
+        default="cpu",
+        choices=["cuda", "mps", "cpu"],
+        help="Device cho embedding model: cuda (NVIDIA GPU), mps (Apple Silicon), cpu",
+    )
     return ap.parse_args()
 
 
@@ -217,6 +230,7 @@ def main():
     collection_name = sanitize_collection_name(collection_name)
     
     print(f"📦 Collection name: {collection_name}")
+    print(f"🖥️  Embedding device: {args.device}")
 
     docs = make_documents(args.chunks, limit=limit)
     build_qdrant_local(
@@ -227,6 +241,7 @@ def main():
         recreate=args.recreate,
         batch_size=args.batch_size,
         use_grpc=args.grpc,
+        device=args.device,
     )
 
 

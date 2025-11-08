@@ -61,6 +61,7 @@ def build_retriever(
     search_type: str = "similarity",
     search_kwargs: Optional[Dict[str, Any]] = None,
     use_grpc: bool = False,
+    device: str = "cpu",
 ) -> BaseRetriever:
     """
     Build a retriever from existing Qdrant collection.
@@ -75,6 +76,7 @@ def build_retriever(
             - {"score_threshold": 0.5} - threshold cho similarity_score_threshold
             - {"fetch_k": 20, "lambda_mult": 0.5} - cho MMR mode
         use_grpc: Sử dụng gRPC cho local client
+        device: Device cho embedding model - "cuda", "mps", "cpu"
     
     Returns:
         BaseRetriever: LangChain retriever object có thể dùng .invoke(query)
@@ -133,9 +135,13 @@ def build_retriever(
         client.close()
     
     # Initialize embeddings (must match the model used during indexing)
+    model_kwargs = {"device": device}
+    encode_kwargs = {"normalize_embeddings": True}
+    
     embeddings = HuggingFaceEmbeddings(
-        model_name=embedding_model, 
-        encode_kwargs={"normalize_embeddings": True}
+        model_name=embedding_model,
+        model_kwargs=model_kwargs,
+        encode_kwargs=encode_kwargs,
     )
     
     # Initialize vector store
