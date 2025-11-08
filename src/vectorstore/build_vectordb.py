@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import uuid
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -10,6 +11,34 @@ from qdrant_client import QdrantClient
 from tqdm import tqdm
 
 from langchain_qdrant import QdrantVectorStore
+
+
+def sanitize_collection_name(name: str) -> str:
+    """
+    Sanitize collection name để tránh lỗi với Qdrant.
+    - Chuyển thành lowercase
+    - Thay thế ký tự đặc biệt bằng underscore
+    - Loại bỏ các ký tự không hợp lệ
+    - Giới hạn độ dài tối đa 255 ký tự
+    
+    Examples:
+        'BAAI/bge-small-en-v1.5' -> 'baai_bge_small_en_v1_5'
+        'sentence-transformers/all-MiniLM-L6-v2' -> 'sentence_transformers_all_minilm_l6_v2'
+    """
+    # Chuyển lowercase
+    name = name.lower()
+    # Thay thế /, -, . bằng underscore
+    name = re.sub(r'[/\-.]', '_', name)
+    # Loại bỏ ký tự không phải chữ cái, số, underscore
+    name = re.sub(r'[^a-z0-9_]', '', name)
+    # Loại bỏ underscore liên tiếp
+    name = re.sub(r'_+', '_', name)
+    # Loại bỏ underscore đầu cuối
+    name = name.strip('_')
+    # Giới hạn độ dài
+    if len(name) > 255:
+        name = name[:255]
+    return name
 
 
 def read_jsonl(path: str, limit: Optional[int] = None) -> Iterable[Dict[str, Any]]:
@@ -170,9 +199,24 @@ def main():
     if not args.collection:
         chunks_basename = os.path.basename(args.chunks)
         # Remove .jsonl extension
-        collection_name = chunks_basename.replace(".jsonl", "")
+        base_name = chunks_basename.replace(".jsonl", "")
+        
+        # Add embedding model to collection name
+        # Sanitize embedding model name để tránh ký tự đặc biệt
+        embedding_safe = sanitize_collection_name(args.embedding_model)
+        collection_name = f"{base_name}_{embedding_safe}"
     else:
+        # User provided custom collection name
         collection_name = args.collection
+        # Still add embedding model if not already in name
+        embedding_safe = sanitize_collection_name(args.embedding_model)
+        if embedding_safe not in collection_name:
+            collection_name = f"{collection_name}_{embedding_safe}"
+    
+    # Sanitize final collection name
+    collection_name = sanitize_collection_name(collection_name)
+    
+    print(f"📦 Collection name: {collection_name}")
 
     docs = make_documents(args.chunks, limit=limit)
     build_qdrant_local(
