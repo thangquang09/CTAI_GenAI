@@ -780,6 +780,9 @@ results = retriever.invoke("How to create a Wix event?")
 - ✅ **Hybrid retriever với configurable alpha & rrf_k**
 - ✅ **Experiment tracking**: Auto-save results to CSV + JSON config
 - ✅ **Analysis tools**: Script để compare và analyze evaluation results
+- ✅ **Automation scripts**: `run_evaluate.py` (Python) và `run_evaluate.sh` (Bash)
+- ✅ **Dynamic collection naming**: Bash script calls Python function để tạo collection names chính xác
+- ✅ **Flexible evaluation parameters**: Configurable chunk_size, overlap, strategy via CLI
 
 ### In Progress:
 - 🔄 Implement semantic & hybrid chunking strategies
@@ -874,3 +877,172 @@ uv run data/evaluate_results/analyze_results.py
 ```
 
 See `data/evaluate_results/README.md` for full documentation.
+
+---
+
+## 🚀 Automation Scripts
+
+### **run_evaluate.py** - Python Automation Script
+
+Full automation script để chạy toàn bộ evaluation pipeline với Python.
+
+**Features**:
+- ✅ **Per-model evaluation**: Build → Evaluate Dense → Evaluate Hybrid (per model)
+- ✅ **Lower memory**: Chỉ load 1 model tại 1 thời điểm
+- ✅ **Incremental saves**: Kết quả được lưu ngay sau mỗi evaluation
+- ✅ **Dynamic collection naming**: Sử dụng exact logic từ `build_vectordb.py`
+- ✅ **Summary report**: Bảng tổng kết cuối cùng
+- ✅ **Cross-platform**: Chạy trên Windows/Linux/Mac
+
+**Configuration** (in file):
+```python
+# Models to evaluate
+EMBEDDING_MODELS = [
+    "Qwen/Qwen3-Embedding-0.6B",
+    "google/embeddinggemma-300m",
+    "BAAI/bge-m3",
+]
+
+# Evaluation settings
+EVAL_CONFIG = {
+    "top_k": 5,
+    "max_queries": 50,
+    "retrieve_k": 50,
+    "agg_mode": "max",
+    "cosine_threshold": 0.75,
+    "eval_method": "both",
+    "alpha": 0.7,
+    "rrf_k": 60,
+}
+```
+
+**Usage**:
+```bash
+# Run full pipeline
+uv run run_evaluate.py
+```
+
+**Flow**:
+```
+1. Chunking (optional, skip if exists)
+
+2-3. FOR EACH model:
+   Build VectorStore
+   → Evaluate Dense mode (save)
+   → Evaluate Hybrid mode (save)
+   → Next model
+
+4. Summary report
+```
+
+---
+
+### **run_evaluate.sh** - Bash Automation Script
+
+Flexible bash script với dynamic collection naming và configurable parameters.
+
+**Features**:
+- ✅ **Dynamic collection naming**: Gọi Python function `get_collection_name()` để tạo tên chính xác
+- ✅ **Flexible parameters**: Configurable strategy, chunk_size, overlap via CLI
+- ✅ **Per-model evaluation**: Build → Dense → Hybrid (per model)
+- ✅ **No hardcoding**: Không fix cứng collection names
+- ✅ **100% accuracy**: Collection names khớp hoàn toàn với `build_vectordb.py` logic
+
+**Parameters**:
+- `--strategy` (required): `recursive` hoặc `token`
+- `--chunk_size` (optional, default: 380): Kích thước chunk
+- `--overlap` (optional, default: 50): Overlap size
+
+**Usage**:
+```bash
+# Default (chunk_size=380, overlap=50)
+bash run_evaluate.sh --strategy recursive
+
+# Custom chunk size
+bash run_evaluate.sh --strategy token --chunk_size 512
+
+# Full custom
+bash run_evaluate.sh --strategy recursive --chunk_size 512 --overlap 64
+```
+
+**Dynamic Collection Naming**:
+```bash
+# Script calls Python function
+QWEN_COLLECTION=$(get_collection_name "Qwen/Qwen3-Embedding-0.6B")
+# Returns: chunks_recursive_380_50_qwen_qwen3_embedding_0_6b
+
+# Helper function definition
+get_collection_name() {
+    local embedding_model=$1
+    python -c "from run_evaluate import get_collection_name; \
+               print(get_collection_name('${CHUNKS_FILE}', '${embedding_model}'))"
+}
+```
+
+**Example Outputs**:
+```bash
+# --strategy recursive --chunk_size 380 --overlap 50
+CHUNKS_FILE: data/chunks/chunks_recursive_380_50.jsonl
+QWEN_COLLECTION: chunks_recursive_380_50_qwen_qwen3_embedding_0_6b
+BGE_COLLECTION: chunks_recursive_380_50_baai_bge_m3
+
+# --strategy token --chunk_size 512 --overlap 64
+CHUNKS_FILE: data/chunks/chunks_token_512_64.jsonl
+QWEN_COLLECTION: chunks_token_512_64_qwen_qwen3_embedding_0_6b
+BGE_COLLECTION: chunks_token_512_64_baai_bge_m3
+```
+
+**Flow**:
+```
+1. Parse CLI arguments (strategy, chunk_size, overlap)
+2. Build chunks filename
+3. FOR EACH model:
+   - Get collection name from Python
+   - Build VectorStore with chunks file
+   - Evaluate Dense mode
+   - Evaluate Hybrid mode
+4. Summary
+```
+
+**Models evaluated** (in script):
+1. `Qwen/Qwen3-Embedding-0.6B`
+2. `BAAI/bge-m3`
+
+**Evaluation config** (fixed in script):
+```bash
+--top_k 5
+--retrieve_k 20
+--agg_mode max
+--cosine_threshold 0.70
+--eval_method both
+--alpha 0.7          # Hybrid mode
+--rrf_k 60           # Hybrid mode
+```
+
+---
+
+### **Comparison: Python vs Bash Script**
+
+| Feature | `run_evaluate.py` | `run_evaluate.sh` |
+|---------|-------------------|-------------------|
+| **Platform** | ✅ Windows/Linux/Mac | ⚠️ Bash (Git Bash on Windows) |
+| **Collection naming** | ✅ Auto from Python | ✅ Auto from Python (calls function) |
+| **Parameters** | 🔧 Edit in file | ✅ CLI arguments |
+| **Models** | 🔧 3 models (edit list) | 🔧 2 models (fixed in script) |
+| **Error handling** | ✅ Advanced try-catch | ⚠️ Basic |
+| **Summary report** | ✅ Detailed table | ✅ Simple output |
+| **Flexibility** | ⚠️ Need edit file | ✅ CLI args (strategy, size, overlap) |
+| **Use case** | Multiple models, complex flow | Quick testing, different configs |
+
+**Recommendation**:
+- **Python script** (`run_evaluate.py`): Khi cần evaluate nhiều models, production runs
+- **Bash script** (`run_evaluate.sh`): Khi cần test nhanh với different chunk configs
+
+---
+
+### **Related Documentation**
+
+- `RUN_EVALUATE_GUIDE.md` - Python script detailed guide
+- `RUN_EVALUATE_SH_GUIDE.md` - Bash script detailed guide  
+- `FLOW_COMPARISON.md` - Visual comparison Bash vs Python flow
+- `SCRIPT_FIX_SUMMARY.md` - Script debugging history
