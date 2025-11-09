@@ -179,13 +179,6 @@ def parse_args():
         help="HuggingFace embedding model",
     )
     ap.add_argument(
-        "--mode",
-        type=str,
-        default="dense",
-        choices=["dense", "hybrid"],
-        help="Indexing mode: dense (vector only) or hybrid (future: dense + sparse)",
-    )
-    ap.add_argument(
         "--limit", type=int, default=0, help="Giới hạn số chunk để index (0 = tất cả)"
     )
     ap.add_argument("--recreate", action="store_true", help="Xóa & tạo mới collection")
@@ -220,19 +213,10 @@ def main():
         if embedding_safe not in collection_name:
             collection_name = f"{collection_name}_{embedding_safe}"
     
-    # Append mode suffix (for hybrid mode)
-    if args.mode == "hybrid":
-        if not collection_name.endswith("_hybrid"):
-            collection_name = f"{collection_name}_hybrid"
-        print("⚠️  NOTE: Hybrid indexing not yet fully implemented.")
-        print("    Currently indexing dense vectors only with '_hybrid' suffix.")
-        print("    Full hybrid support (dense + sparse) coming soon.")
-    
     # Sanitize final collection name
     collection_name = sanitize_collection_name(collection_name)
     
     print(f"📦 Collection name: {collection_name}")
-    print(f"🔧 Mode: {args.mode}")
 
     docs = make_documents(args.chunks, limit=limit)
     build_qdrant_local(

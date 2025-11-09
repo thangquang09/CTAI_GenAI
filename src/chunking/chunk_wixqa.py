@@ -4,7 +4,7 @@ import os
 from typing import Any, Dict, Iterable, List
 
 from datasets import load_dataset
-from split_function import split_recursive, split_token
+from split_function import split_recursive, split_semantic, split_token
 
 
 def load_wix_corpus() -> Iterable[Dict[str, Any]]:
@@ -38,9 +38,7 @@ def make_chunks_for_records(
     elif strategy == "token":
         parts = split_token(text, chunk_size, chunk_overlap)
     elif strategy == "semantic":
-        # thông số semantic có thể chỉnh trong hàm; chunk_size/overlap dùng cho nén hậu kì
-        # parts = split_semantic(text, max_chunk_size=chunk_size)
-        pass
+        parts = split_semantic(text, chunk_size, chunk_overlap)
     elif strategy == "hybrid_para_token":
         # parts = split_hybrid_para_token(text, chunk_size, chunk_overlap)
         pass
@@ -97,9 +95,11 @@ def parse_arg():
 
 def main():
     args = parse_arg()
-    
+
     if args.out == "":
-        out_dir = f"data/chunks/chunks_{args.strategy}_{args.chunk_size}_{args.overlap}.jsonl"
+        out_dir = (
+            f"data/chunks/chunks_{args.strategy}_{args.chunk_size}_{args.overlap}.jsonl"
+        )
     else:
         out_dir = args.out
     os.makedirs(os.path.dirname(out_dir) or ".", exist_ok=True)
@@ -122,9 +122,7 @@ def main():
             if args.max_records and n >= args.max_records:
                 break
 
-    print(
-        f"Done. Articles processed: {n} | Chunks written: {total_chunks} → {out_dir}"
-    )
+    print(f"Done. Articles processed: {n} | Chunks written: {total_chunks} → {out_dir}")
 
 
 if __name__ == "__main__":
