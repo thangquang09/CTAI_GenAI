@@ -1244,6 +1244,13 @@ def main():
         chunk_size = args.chunk_size
         overlap = args.overlap
 
+    # Determine actual search type based on retrieval mode
+    # For hybrid mode, search_type should be "hybrid_rrf" not "similarity"
+    if args.retrieval_mode == "hybrid":
+        actual_search_type = "hybrid_rrf"
+    else:
+        actual_search_type = args.search_type
+
     eval_config = {
         # Pipeline config
         "mode": args.mode,
@@ -1256,7 +1263,7 @@ def main():
         "retrieval_mode": args.retrieval_mode,
         # Retriever config
         "top_k": args.top_k,
-        "search_type": args.search_type,
+        "search_type": actual_search_type,  # Corrected to reflect actual retrieval method
         "alpha": args.alpha,
         "rrf_k": args.rrf_k,
         # Evaluation config

@@ -242,6 +242,9 @@ def build_retriever(
         
         # Load documents for BM25
         print("\n🔧 Building hybrid retriever...")
+        print("   Mode: Hybrid (Dense + BM25 with RRF)")
+        print(f"   Alpha: {alpha} (0=sparse only, 1=dense only)")
+        print(f"   RRF k: {rrf_k}")
         documents = load_documents_from_jsonl(chunks_file)
         
         # Import hybrid retriever
@@ -255,6 +258,10 @@ def build_retriever(
             alpha=alpha,
             rrf_k=rrf_k,
         )
+        
+        print("✅ Hybrid retriever ready!")
+        print(f"   Retriever type: {type(retriever).__name__}")
+        print(f"   Top-k: {default_search_kwargs['k']}")
         
         return retriever
     else:
