@@ -1,25 +1,31 @@
 """
 Build retriever from Qdrant vector store for RAG applications.
 
+Supports both dense-only and hybrid (dense + BM25) retrieval modes.
+
 Usage:
-    # Basic retriever
+    # Dense retrieval (default)
     retriever = build_retriever(
         collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5",
         qdrant_path="langchain_qdrant",
         embedding_model="BAAI/bge-small-en-v1.5"
     )
     
+    # Hybrid retrieval (dense + BM25)
+    retriever = build_retriever(
+        collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
+        qdrant_path="langchain_qdrant",
+        embedding_model="BAAI/bge-small-en-v1.5",
+        mode="hybrid",
+        chunks_file="data/chunks/chunks_recursive_380_50.jsonl"
+    )
+    
     # Search with default top_k=5
     docs = retriever.invoke("How to create a Wix event?")
-    
-    # Search with custom top_k
-    docs = retriever.invoke("How to create a Wix event?", top_k=10)
-    
-    # With search kwargs
-    retriever = build_retriever(..., search_type="mmr", search_kwargs={"k": 10})
 """
 
 import argparse
+import json
 import os
 import re
 from typing import Any, Dict, List, Optional
@@ -54,6 +60,58 @@ def sanitize_collection_name(name: str) -> str:
     return name
 
 
+def detect_retriever_mode(collection_name: str) -> str:
+    """
+    Auto-detect retriever mode from collection name.
+    
+    Args:
+        collection_name: Collection name (may contain _hybrid suffix)
+        
+    Returns:
+        "hybrid" if collection ends with "_hybrid", else "dense"
+        
+    Examples:
+        >>> detect_retriever_mode("chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid")
+        "hybrid"
+        >>> detect_retriever_mode("chunks_recursive_380_50_baai_bge_small_en_v1_5")
+        "dense"
+    """
+    collection_name_lower = collection_name.lower()
+    if collection_name_lower.endswith("_hybrid"):
+        return "hybrid"
+    return "dense"
+
+
+def load_documents_from_jsonl(jsonl_path: str) -> List[Document]:
+    """
+    Load documents from JSONL file for BM25 indexing.
+    
+    Args:
+        jsonl_path: Path to JSONL chunks file
+        
+    Returns:
+        List of Document objects
+    """
+    docs = []
+    with open(jsonl_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                row = json.loads(line)
+                text = row.get("text", "")
+                metadata = {
+                    "chunk_id": row.get("chunk_id"),
+                    "article_id": row.get("article_id"),
+                    "title": row.get("title"),
+                    "url": row.get("url"),
+                    "article_type": row.get("article_type"),
+                    "position": row.get("position"),
+                }
+                docs.append(Document(page_content=text, metadata=metadata))
+    
+    print(f"📚 Loaded {len(docs)} documents from {jsonl_path}")
+    return docs
+
+
 def build_retriever(
     collection_name: str,
     qdrant_path: str = "langchain_qdrant",
@@ -61,9 +119,15 @@ def build_retriever(
     search_type: str = "similarity",
     search_kwargs: Optional[Dict[str, Any]] = None,
     use_grpc: bool = False,
+    mode: Optional[str] = None,
+    chunks_file: Optional[str] = None,
+    alpha: float = 0.5,
+    rrf_k: int = 60,
 ) -> BaseRetriever:
     """
     Build a retriever from existing Qdrant collection.
+    
+    Supports both dense-only and hybrid (dense + BM25) retrieval.
     
     Args:
         collection_name: Tên collection trong Qdrant (sẽ được sanitize)
@@ -75,39 +139,47 @@ def build_retriever(
             - {"score_threshold": 0.5} - threshold cho similarity_score_threshold
             - {"fetch_k": 20, "lambda_mult": 0.5} - cho MMR mode
         use_grpc: Sử dụng gRPC cho local client
+        mode: Retrieval mode - "dense", "hybrid", hoặc None (auto-detect from collection name)
+        chunks_file: Path to JSONL chunks file (required for hybrid mode)
+        alpha: Hybrid mode weight (0=sparse only, 1=dense only, 0.5=equal)
+        rrf_k: RRF parameter for hybrid mode (default=60)
     
     Returns:
         BaseRetriever: LangChain retriever object có thể dùng .invoke(query)
     
-    Search Types:
-        - "similarity": Vector similarity search (default)
-        - "mmr": Maximal Marginal Relevance (đa dạng hóa kết quả)
-        - "similarity_score_threshold": Chỉ trả về docs có score >= threshold
+    Modes:
+        - "dense": Vector similarity search only (default)
+        - "hybrid": Dense + BM25 with Reciprocal Rank Fusion
+        - None: Auto-detect from collection name (collections ending with "_hybrid" use hybrid mode)
     
     Examples:
-        >>> # Basic similarity search với top_k=5
+        >>> # Dense retrieval (default)
         >>> retriever = build_retriever(
         ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5",
         ...     search_kwargs={"k": 5}
         ... )
-        >>> docs = retriever.invoke("How to create events in Wix?")
         
-        >>> # MMR search (đa dạng hóa)
+        >>> # Hybrid retrieval (explicit)
         >>> retriever = build_retriever(
-        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5",
-        ...     search_type="mmr",
-        ...     search_kwargs={"k": 10, "fetch_k": 50, "lambda_mult": 0.5}
+        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
+        ...     mode="hybrid",
+        ...     chunks_file="data/chunks/chunks_recursive_380_50.jsonl",
+        ...     alpha=0.5  # Equal weight
         ... )
         
-        >>> # Với score threshold
+        >>> # Hybrid retrieval (auto-detect)
         >>> retriever = build_retriever(
-        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5",
-        ...     search_type="similarity_score_threshold",
-        ...     search_kwargs={"score_threshold": 0.7, "k": 10}
-        ... )
+        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
+        ...     chunks_file="data/chunks/chunks_recursive_380_50.jsonl"
+        ... )  # Auto-detects hybrid mode from "_hybrid" suffix
     """
     # Sanitize collection name
     collection_name = sanitize_collection_name(collection_name)
+    
+    # Auto-detect mode if not specified
+    if mode is None:
+        mode = detect_retriever_mode(collection_name)
+        print(f"🔍 Auto-detected mode: {mode}")
     
     # Check if collection exists
     if not os.path.exists(qdrant_path):
@@ -150,17 +222,48 @@ def build_retriever(
     if search_kwargs:
         default_search_kwargs.update(search_kwargs)
     
-    # Create retriever với search type và kwargs
-    retriever = vector_store.as_retriever(
+    # Build dense retriever first
+    dense_retriever = vector_store.as_retriever(
         search_type=search_type,
         search_kwargs=default_search_kwargs,
     )
     
-    print("✅ Retriever ready!")
-    print(f"   Search type: {search_type}")
-    print(f"   Search kwargs: {default_search_kwargs}")
-    
-    return retriever
+    # Return hybrid or dense retriever based on mode
+    if mode == "hybrid":
+        # Hybrid mode requires chunks_file
+        if not chunks_file:
+            raise ValueError(
+                "Hybrid mode requires chunks_file parameter. "
+                "Please provide path to JSONL chunks file."
+            )
+        
+        if not os.path.exists(chunks_file):
+            raise FileNotFoundError(f"Chunks file not found: {chunks_file}")
+        
+        # Load documents for BM25
+        print("\n🔧 Building hybrid retriever...")
+        documents = load_documents_from_jsonl(chunks_file)
+        
+        # Import hybrid retriever
+        from .hybrid_retriever import build_hybrid_retriever
+        
+        # Build hybrid retriever
+        retriever = build_hybrid_retriever(
+            dense_retriever=dense_retriever,
+            documents=documents,
+            k=default_search_kwargs["k"],
+            alpha=alpha,
+            rrf_k=rrf_k,
+        )
+        
+        return retriever
+    else:
+        # Dense mode
+        print("✅ Dense retriever ready!")
+        print(f"   Search type: {search_type}")
+        print(f"   Search kwargs: {default_search_kwargs}")
+        
+        return dense_retriever
 
 
 def search_documents(
@@ -219,6 +322,31 @@ def parse_args():
         help="HuggingFace embedding model (phải khớp với khi build)",
     )
     ap.add_argument(
+        "--mode",
+        type=str,
+        default=None,
+        choices=["dense", "hybrid"],
+        help="Retrieval mode (None=auto-detect from collection name)",
+    )
+    ap.add_argument(
+        "--chunks_file",
+        type=str,
+        default="",
+        help="Path to JSONL chunks file (required for hybrid mode)",
+    )
+    ap.add_argument(
+        "--alpha",
+        type=float,
+        default=0.5,
+        help="Hybrid mode weight: 0=sparse only, 1=dense only (default=0.5)",
+    )
+    ap.add_argument(
+        "--rrf_k",
+        type=int,
+        default=60,
+        help="RRF parameter for hybrid mode (default=60)",
+    )
+    ap.add_argument(
         "--query",
         type=str,
         default="",
@@ -235,7 +363,7 @@ def parse_args():
         type=str,
         default="similarity",
         choices=["similarity", "mmr", "similarity_score_threshold"],
-        help="Loại search",
+        help="Loại search (chỉ dùng cho dense retriever)",
     )
     ap.add_argument(
         "--score_threshold",
@@ -271,6 +399,10 @@ def main():
         search_type=args.search_type,
         search_kwargs=search_kwargs,
         use_grpc=args.grpc,
+        mode=args.mode,
+        chunks_file=args.chunks_file if args.chunks_file else None,
+        alpha=args.alpha,
+        rrf_k=args.rrf_k,
     )
     
     # Test search if query provided
@@ -291,6 +423,8 @@ def main():
     else:
         print("\n💡 Tip: Dùng --query để test search")
         print("   Example: python build_retriever.py --collection <name> --query 'How to create events?'")
+        print("\n💡 For hybrid mode:")
+        print("   python build_retriever.py --collection <name>_hybrid --chunks_file data/chunks/<file>.jsonl --query 'test'")
 
 
 if __name__ == "__main__":

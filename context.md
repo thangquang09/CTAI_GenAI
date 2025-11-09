@@ -126,7 +126,7 @@ python src/chunking/chunk_wixqa.py --strategy token --chunk_size 380 --overlap 5
 
 ---
 
-## �️ Vector Store Setup
+## 🗄️ Vector Store Setup
 
 ### **src/vectorstore/** - Module xây dựng vector database
 
@@ -532,7 +532,225 @@ Metrics:
 
 ---
 
-## 📝 Development Log
+## 🔀 Hybrid Search (Dense + Sparse BM25)
+
+### **Overview**
+Hybrid search kết hợp vector similarity (dense) và keyword matching (BM25 sparse) để cải thiện retrieval quality.
+
+### **Implementation Approach**
+- **Dense retrieval**: Vector embeddings (như hiện tại)
+- **Sparse retrieval**: BM25 keyword search trên text content
+- **Fusion**: Reciprocal Rank Fusion (RRF) để merge kết quả
+
+### **Collection Naming Convention**
+
+**Dense mode** (vector only):
+```
+chunks_recursive_380_50_baai_bge_small_en_v1_5
+```
+
+**Hybrid mode** (dense + BM25):
+```
+chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid
+```
+
+Pattern: `{chunks}_{embedding_model}_{mode}`
+
+### **src/vectorstore/hybrid_retriever.py** - Hybrid Retriever Implementation
+
+**Key Components**:
+- `HybridRetriever`: LangChain BaseRetriever subclass
+- `build_bm25_index()`: Build BM25 index from documents
+- `_reciprocal_rank_fusion()`: RRF algorithm to merge dense + sparse results
+
+**Parameters**:
+- `alpha`: Weight for dense vs sparse (0=sparse only, 1=dense only, 0.5=equal)
+- `rrf_k`: RRF constant parameter (default=60)
+- `k`: Number of documents to retrieve
+
+**RRF Formula**:
+```
+score(d) = alpha * (1 / (rrf_k + rank_dense(d))) + 
+           (1-alpha) * (1 / (rrf_k + rank_sparse(d)))
+```
+
+### **Updated Scripts**
+
+#### **build_vectordb.py**
+```bash
+# Dense indexing (default)
+uv run src/vectorstore/build_vectordb.py \
+  --chunks data/chunks/chunks_recursive_380_50.jsonl \
+  --mode dense
+
+# Hybrid indexing (adds _hybrid suffix)
+uv run src/vectorstore/build_vectordb.py \
+  --chunks data/chunks/chunks_recursive_380_50.jsonl \
+  --mode hybrid
+```
+
+**Note**: Hybrid indexing currently creates dense-only vectors with `_hybrid` suffix. Full sparse vector support coming soon.
+
+#### **build_retriever.py**
+```bash
+# Dense retrieval (auto-detect from collection name)
+uv run python src/vectorstore/build_retriever.py \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5 \
+  --query "How to create events?"
+
+# Hybrid retrieval (auto-detect from _hybrid suffix)
+uv run python src/vectorstore/build_retriever.py \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+  --chunks_file data/chunks/chunks_recursive_380_50.jsonl \
+  --query "How to create events?" \
+  --alpha 0.5 \
+  --rrf_k 60
+
+# Explicit mode (override auto-detection)
+uv run python src/vectorstore/build_retriever.py \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+  --mode hybrid \
+  --chunks_file data/chunks/chunks_recursive_380_50.jsonl
+```
+
+**Auto-detection Logic**:
+- Collection ending with `_hybrid` → hybrid mode
+- Otherwise → dense mode
+
+**Hybrid Mode Requirements**:
+- `--chunks_file` must be provided (for BM25 index)
+- Same JSONL file used during indexing
+
+#### **evaluate.py**
+```bash
+# Full pipeline with hybrid search
+uv run python src/evaluate.py \
+  --mode full \
+  --strategy recursive \
+  --chunk_size 380 \
+  --overlap 50 \
+  --retrieval_mode hybrid \
+  --alpha 0.5 \
+  --max_queries 100
+
+# Evaluate existing hybrid collection
+uv run python src/evaluate.py \
+  --mode from_collection \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+  --chunks_file data/chunks/chunks_recursive_380_50.jsonl \
+  --alpha 0.5 \
+  --eval_method both
+
+# Auto-detect chunks_file (for hybrid collections)
+uv run python src/evaluate.py \
+  --mode from_collection \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+  --eval_method both
+  # Auto-detects: data/chunks/chunks_recursive_380_50.jsonl
+```
+
+**New Parameters**:
+- `--retrieval_mode`: `dense` or `hybrid` (default: `dense`)
+- `--chunks_file`: Path to JSONL chunks (auto-detected for hybrid if not provided)
+- `--alpha`: Hybrid weight (default: 0.5)
+- `--rrf_k`: RRF parameter (default: 60)
+
+**Auto-detection**:
+- Detects mode from collection name (`_hybrid` suffix)
+- Infers chunks_file from collection name pattern:
+  - `chunks_{strategy}_{size}_{overlap}_{embedding}_hybrid`
+  - → `data/chunks/chunks_{strategy}_{size}_{overlap}.jsonl`
+
+### **Usage Examples**
+
+**Example 1: Full Pipeline Dense vs Hybrid**
+```bash
+# Dense (baseline)
+uv run python src/evaluate.py \
+  --mode full --strategy recursive --chunk_size 380 --overlap 50 \
+  --retrieval_mode dense --max_queries 200 --eval_method both
+
+# Hybrid (BM25 + dense)
+uv run python src/evaluate.py \
+  --mode full --strategy recursive --chunk_size 380 --overlap 50 \
+  --retrieval_mode hybrid --alpha 0.5 --max_queries 200 --eval_method both
+```
+
+**Example 2: Evaluate Existing Collections**
+```bash
+# Evaluate dense collection
+uv run python src/evaluate.py \
+  --mode from_collection \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5 \
+  --eval_method both --max_queries 200
+
+# Evaluate hybrid collection (auto-detect chunks_file)
+uv run python src/evaluate.py \
+  --mode from_collection \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+  --eval_method both --max_queries 200
+```
+
+**Example 3: Hyperparameter Tuning**
+```bash
+# Test different alpha values (dense vs sparse weight)
+for alpha in 0.0 0.25 0.5 0.75 1.0; do
+  uv run python src/evaluate.py \
+    --mode from_collection \
+    --collection chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid \
+    --chunks_file data/chunks/chunks_recursive_380_50.jsonl \
+    --alpha $alpha \
+    --eval_method both \
+    --max_queries 200
+done
+```
+
+### **Dependencies**
+```toml
+# Added to pyproject.toml
+dependencies = [
+    ...
+    "rank-bm25>=0.2.2",  # BM25 implementation
+]
+```
+
+Install:
+```bash
+uv pip install rank-bm25
+```
+
+### **API Usage in Code**
+```python
+from vectorstore.build_retriever import build_retriever
+
+# Dense retriever (default)
+retriever = build_retriever(
+    collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5",
+    search_kwargs={"k": 5}
+)
+
+# Hybrid retriever (explicit)
+retriever = build_retriever(
+    collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
+    mode="hybrid",
+    chunks_file="data/chunks/chunks_recursive_380_50.jsonl",
+    alpha=0.5,  # Equal weight
+    rrf_k=60
+)
+
+# Hybrid retriever (auto-detect from _hybrid suffix)
+retriever = build_retriever(
+    collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
+    chunks_file="data/chunks/chunks_recursive_380_50.jsonl"
+)
+
+# Use retriever
+results = retriever.invoke("How to create a Wix event?")
+```
+
+---
+
+##  Development Log
 
 ### Completed:
 - ✅ Setup chunking pipeline với 2 strategies (recursive, token)
@@ -555,18 +773,24 @@ Metrics:
 - ✅ **Re-embedding approach** để đảm bảo consistency
 - ✅ **Professional output formatting** (clean, no excessive emojis)
 - ✅ **Debug statistics** để monitor evaluation process
+- ✅ **Hybrid Search Implementation** (Dense + BM25 with RRF)
+- ✅ **Auto-detection of retrieval mode** from collection name
+- ✅ **Auto-inference of chunks_file** from collection naming pattern
+- ✅ **Collection naming convention** với `_hybrid` suffix
+- ✅ **Hybrid retriever với configurable alpha & rrf_k**
 
 ### In Progress:
 - 🔄 Implement semantic & hybrid chunking strategies
 - 🔄 Code quality improvements (type hints, error handling)
+- 🔄 **Compare dense vs hybrid performance metrics**
 
 ### Planned:
 - 📋 **Metrics visualization** (plots, comparison tables)
 - 📋 **Experiment tracking** (save results to JSON/CSV)
 - 📋 **Statistical significance testing** (paired t-test, bootstrap)
 - 📋 **Reranker integration** (BAAI/bge-reranker-v2-m3)
-- 📋 **Hybrid search** (dense + sparse/BM25)
 - 📋 **NDCG metric** (Normalized Discounted Cumulative Gain)
+- 📋 **Full sparse vector support** in Qdrant (SPLADE embeddings)
 - 📋 Add token counting & statistics
 - 📋 Support multiple output formats (Parquet, CSV)
 - 📋 A/B testing framework cho chunking strategies

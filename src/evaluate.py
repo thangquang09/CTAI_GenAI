@@ -102,6 +102,7 @@ def run_vectorstore_pipeline(
     recreate: bool = False,
     limit: int = 0,
     batch_size: int = 256,
+    mode: str = "dense",
 ) -> str:
     """
     Chạy vectorstore pipeline để build Qdrant collection từ chunks.
@@ -114,6 +115,7 @@ def run_vectorstore_pipeline(
         recreate: Xóa và tạo lại collection
         limit: Giới hạn số chunks (0 = toàn bộ)
         batch_size: Batch size khi index
+        mode: Indexing mode - "dense" or "hybrid"
 
     Returns:
         str: Tên collection đã tạo
@@ -132,6 +134,8 @@ def run_vectorstore_pipeline(
         embedding_model,
         "--batch_size",
         str(batch_size),
+        "--mode",
+        mode,
     ]
 
     if collection_name:
@@ -151,7 +155,7 @@ def run_vectorstore_pipeline(
 
     # Extract collection name từ output (nếu auto-generated)
     if not collection_name:
-        # Auto-generated: chunks_{name}_{embedding_model_sanitized}
+        # Auto-generated: chunks_{name}_{embedding_model_sanitized}_{mode}
         from vectorstore.build_retriever import sanitize_collection_name
 
         chunks_basename = os.path.basename(chunks_file).replace(".jsonl", "")
@@ -159,6 +163,10 @@ def run_vectorstore_pipeline(
         collection_name = sanitize_collection_name(
             f"{chunks_basename}_{embedding_safe}"
         )
+        
+        # Add mode suffix for hybrid
+        if mode == "hybrid":
+            collection_name = f"{collection_name}_hybrid"
 
     print(f"[SUCCESS] Collection created: {collection_name}")
     return collection_name
@@ -166,20 +174,28 @@ def run_vectorstore_pipeline(
 
 def get_retriever(
     collection_name: str,
+    chunks_file: str = "",
     qdrant_path: str = "langchain_qdrant",
     embedding_model: str = "BAAI/bge-small-en-v1.5",
     search_type: str = "similarity",
     top_k: int = 5,
+    alpha: float = 0.5,
+    rrf_k: int = 60,
 ) -> BaseRetriever:
     """
     Lấy retriever từ Qdrant collection.
+    
+    Tự động detect mode (dense/hybrid) từ collection name.
 
     Args:
         collection_name: Tên collection trong Qdrant
+        chunks_file: Đường dẫn JSONL chunks (required cho hybrid mode)
         qdrant_path: Đường dẫn Qdrant database
         embedding_model: HuggingFace embedding model (phải khớp với khi build)
         search_type: Loại search (similarity, mmr, similarity_score_threshold)
         top_k: Số documents trả về
+        alpha: Hybrid mode weight (0=sparse, 1=dense, 0.5=equal)
+        rrf_k: RRF parameter for hybrid mode
 
     Returns:
         BaseRetriever: LangChain retriever object
@@ -193,6 +209,10 @@ def get_retriever(
         embedding_model=embedding_model,
         search_type=search_type,
         search_kwargs={"k": top_k},
+        mode=None,  # Auto-detect from collection name
+        chunks_file=chunks_file if chunks_file else None,
+        alpha=alpha,
+        rrf_k=rrf_k,
     )
 
     return retriever
@@ -761,7 +781,10 @@ def run_full_pipeline(
     embedding_model: str = "BAAI/bge-small-en-v1.5",
     recreate: bool = False,
     top_k: int = 5,
-) -> BaseRetriever:
+    mode: str = "dense",
+    alpha: float = 0.5,
+    rrf_k: int = 60,
+) -> Tuple[BaseRetriever, str]:
     """
     Chạy full pipeline: chunk → vectorstore → retriever.
 
@@ -774,9 +797,12 @@ def run_full_pipeline(
         embedding_model: HuggingFace embedding model
         recreate: Xóa và tạo lại collection
         top_k: Số documents trả về khi retrieve
+        mode: Retrieval mode - "dense" or "hybrid"
+        alpha: Hybrid weight (0=sparse, 1=dense)
+        rrf_k: RRF parameter
 
     Returns:
-        BaseRetriever: Retriever đã sẵn sàng để evaluate
+        Tuple[BaseRetriever, str]: (Retriever đã sẵn sàng, chunks_file path)
     """
 
     print("FULL PIPELINE: CHUNK -> VECTORSTORE -> RETRIEVER")
@@ -795,36 +821,48 @@ def run_full_pipeline(
         qdrant_path=qdrant_path,
         embedding_model=embedding_model,
         recreate=recreate,
+        mode=mode,
     )
 
     # Step 3: Get retriever
     retriever = get_retriever(
         collection_name=collection_name,
+        chunks_file=chunks_file,
         qdrant_path=qdrant_path,
         embedding_model=embedding_model,
         top_k=top_k,
+        alpha=alpha,
+        rrf_k=rrf_k,
     )
 
     print("[SUCCESS] FULL PIPELINE COMPLETED")
     print("=" * 80 + "\n")
 
-    return retriever
+    return retriever, chunks_file
 
 
 def run_from_collection(
     collection_name: str,
+    chunks_file: str = "",
     qdrant_path: str = "langchain_qdrant",
     embedding_model: str = "BAAI/bge-small-en-v1.5",
     top_k: int = 5,
+    alpha: float = 0.5,
+    rrf_k: int = 60,
 ) -> BaseRetriever:
     """
     Chạy pipeline từ collection có sẵn: load collection → retriever.
+    
+    Auto-detects mode (dense/hybrid) from collection name.
 
     Args:
         collection_name: Tên collection trong Qdrant
+        chunks_file: Đường dẫn JSONL chunks (required nếu collection là hybrid)
         qdrant_path: Đường dẫn Qdrant database
         embedding_model: HuggingFace embedding model
         top_k: Số documents trả về
+        alpha: Hybrid weight (0=sparse, 1=dense)
+        rrf_k: RRF parameter
 
     Returns:
         BaseRetriever: Retriever đã sẵn sàng để evaluate
@@ -832,12 +870,15 @@ def run_from_collection(
 
     print("LOADING EXISTING COLLECTION")
 
-    # Get retriever từ collection có sẵn
+    # Get retriever từ collection có sẵn (auto-detects mode)
     retriever = get_retriever(
         collection_name=collection_name,
+        chunks_file=chunks_file,
         qdrant_path=qdrant_path,
         embedding_model=embedding_model,
         top_k=top_k,
+        alpha=alpha,
+        rrf_k=rrf_k,
     )
 
     print("[SUCCESS] RETRIEVER READY")
@@ -919,9 +960,34 @@ Examples:
         help="Tên collection (required cho mode=from_collection)",
     )
     parser.add_argument(
+        "--chunks_file",
+        type=str,
+        default="",
+        help="Đường dẫn JSONL chunks file (auto-detect hoặc required cho hybrid mode)",
+    )
+    parser.add_argument(
         "--recreate",
         action="store_true",
         help="Xóa và tạo lại collection (chỉ dùng với mode=full)",
+    )
+    parser.add_argument(
+        "--retrieval_mode",
+        type=str,
+        default="dense",
+        choices=["dense", "hybrid"],
+        help="Retrieval mode: dense (vector only) or hybrid (dense + BM25)",
+    )
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        default=0.5,
+        help="Hybrid mode weight: 0=sparse only, 1=dense only (default=0.5)",
+    )
+    parser.add_argument(
+        "--rrf_k",
+        type=int,
+        default=60,
+        help="RRF parameter for hybrid mode (default=60)",
     )
 
     # Retriever params
@@ -936,7 +1002,7 @@ Examples:
         type=str,
         default="similarity",
         choices=["similarity", "mmr", "similarity_score_threshold"],
-        help="Loại search",
+        help="Loại search (chỉ cho dense retriever)",
     )
 
     # Evaluation params
@@ -984,9 +1050,12 @@ def main():
         print("[ERROR] --collection is required for mode=from_collection")
         sys.exit(1)
 
+    # Auto-detect chunks_file if not provided
+    chunks_file = args.chunks_file
+    
     # Run pipeline to get retriever
     if args.mode == "full":
-        retriever = run_full_pipeline(
+        retriever, chunks_file = run_full_pipeline(
             strategy=args.strategy,
             chunk_size=args.chunk_size,
             overlap=args.overlap,
@@ -995,6 +1064,9 @@ def main():
             embedding_model=args.embedding_model,
             recreate=args.recreate,
             top_k=args.top_k,
+            mode=args.retrieval_mode,
+            alpha=args.alpha,
+            rrf_k=args.rrf_k,
         )
         # Auto-determine collection name (same logic as in pipeline)
         from vectorstore.build_retriever import sanitize_collection_name
@@ -1004,12 +1076,32 @@ def main():
         collection_name = sanitize_collection_name(
             f"{chunks_basename}_{embedding_safe}"
         )
+        if args.retrieval_mode == "hybrid":
+            collection_name = f"{collection_name}_hybrid"
     else:  # from_collection
+        # Auto-detect chunks_file if not provided
+        if not chunks_file and args.collection.endswith("_hybrid"):
+            # Try to infer chunks_file from collection name
+            # Example: chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid
+            # -> chunks_recursive_380_50.jsonl
+            parts = args.collection.split("_")
+            if len(parts) >= 3:
+                # Extract chunks_<strategy>_<size>_<overlap>
+                strategy = parts[1] if len(parts) > 1 else "recursive"
+                size = parts[2] if len(parts) > 2 else "380"
+                overlap = parts[3] if len(parts) > 3 else "50"
+                chunks_file = f"data/chunks/chunks_{strategy}_{size}_{overlap}.jsonl"
+                print(f"⚠️  Auto-detected chunks_file: {chunks_file}")
+                print("   (If incorrect, please provide --chunks_file explicitly)")
+        
         retriever = run_from_collection(
             collection_name=args.collection,
+            chunks_file=chunks_file,
             qdrant_path=args.qdrant_path,
             embedding_model=args.embedding_model,
             top_k=args.top_k,
+            alpha=args.alpha,
+            rrf_k=args.rrf_k,
         )
         collection_name = args.collection
 
