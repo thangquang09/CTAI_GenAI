@@ -19,6 +19,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
+--max_queries 20 \
 --cosine_threshold 0.70
 
 echo "Evaluating Qwen - Hybrid mode..."
@@ -35,6 +36,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
+--max_queries 20 \
 --cosine_threshold 0.70
 
 uv run src/vectorstore/build_vectordb.py \
@@ -52,6 +54,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
+--max_queries 20 \
 --cosine_threshold 0.70
 
 echo "Evaluating BAAI/bge-m3 - Hybrid mode..."
@@ -68,6 +71,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
+--max_queries 20 \
 --cosine_threshold 0.70
 
 # echo "============================================================"
