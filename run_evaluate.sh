@@ -4,17 +4,9 @@ echo "============================================================"
 echo "Build VectorStore for 2 models (chunks_token)"
 echo "============================================================"
 
-uv run src/vectorstore/build_vectordb.py \
---chunks data/chunks/chunks_token_380_50.jsonl \
---embedding_model "Qwen/Qwen3-Embedding-0.6B"
-
-uv run src/vectorstore/build_vectordb.py \
---chunks data/chunks/chunks_token_380_50.jsonl \
---embedding_model "BAAI/bge-m3"
-
-echo "============================================================"
-echo "Evaluate Model 1: Qwen/Qwen3-Embedding-0.6B"
-echo "============================================================"
+# uv run src/vectorstore/build_vectordb.py \
+# --chunks data/chunks/chunks_token_380_50.jsonl \
+# --embedding_model "Qwen/Qwen3-Embedding-0.6B"
 
 echo "Evaluating Qwen - Dense mode..."
 uv run src/evaluate.py \
@@ -45,9 +37,9 @@ uv run src/evaluate.py \
 --agg_mode max \
 --cosine_threshold 0.70
 
-echo "============================================================"
-echo "Evaluate Model 2: BAAI/bge-m3"
-echo "============================================================"
+uv run src/vectorstore/build_vectordb.py \
+--chunks data/chunks/chunks_token_380_50.jsonl \
+--embedding_model "BAAI/bge-m3"
 
 echo "Evaluating BAAI/bge-m3 - Dense mode..."
 uv run src/evaluate.py \
@@ -77,6 +69,17 @@ uv run src/evaluate.py \
 --retrieve_k 20 \
 --agg_mode max \
 --cosine_threshold 0.70
+
+# echo "============================================================"
+# echo "Evaluate Model 1: Qwen/Qwen3-Embedding-0.6B"
+# echo "============================================================"
+
+
+# echo "============================================================"
+# echo "Evaluate Model 2: BAAI/bge-m3"
+# echo "============================================================"
+
+
 
 echo "============================================================"
 echo "All evaluations completed!"
