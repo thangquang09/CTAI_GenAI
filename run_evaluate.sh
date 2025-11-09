@@ -19,7 +19,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
---max_queries 20 \
+--max_queries 10 \
 --cosine_threshold 0.70
 
 echo "Evaluating Qwen - Hybrid mode..."
@@ -36,12 +36,13 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
---max_queries 20 \
+--max_queries 10 \
 --cosine_threshold 0.70
 
 uv run src/vectorstore/build_vectordb.py \
 --chunks data/chunks/chunks_recursive_380_50.jsonl \
---embedding_model "BAAI/bge-m3"
+--embedding_model "BAAI/bge-m3" \
+--limit 10
 
 echo "Evaluating BAAI/bge-m3 - Dense mode..."
 uv run src/evaluate.py \
@@ -54,7 +55,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
---max_queries 20 \
+--max_queries 10 \
 --cosine_threshold 0.70
 
 echo "Evaluating BAAI/bge-m3 - Hybrid mode..."
@@ -71,7 +72,7 @@ uv run src/evaluate.py \
 --eval_method both \
 --retrieve_k 20 \
 --agg_mode max \
---max_queries 20 \
+--max_queries 10 \
 --cosine_threshold 0.70
 
 # echo "============================================================"
