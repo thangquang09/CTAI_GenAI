@@ -24,7 +24,9 @@ if [ -z "$DRIVE_LINK" ]; then
     exit 1
 fi
 
+echo "Installing Packages..."
 uv sync --quiet
+echo "Install Vector Databases"
 gdown "$DRIVE_LINK" -O langchain_qdrant.zip
 unzip -q langchain_qdrant.zip -d .
 rm langchain_qdrant.zip

@@ -1,0 +1,11 @@
+{
+  "total_experiments": 1,
+  "best_hit_rate": {
+    "value": 0.64,
+    "experiment_id": "exp_20251109_170142"
+  },
+  "best_mrr": {
+    "value": 0.4567,
+    "experiment_id": "exp_20251109_170142"
+  }
+}

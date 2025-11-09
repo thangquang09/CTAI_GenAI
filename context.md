@@ -778,6 +778,8 @@ results = retriever.invoke("How to create a Wix event?")
 - ✅ **Auto-inference of chunks_file** from collection naming pattern
 - ✅ **Collection naming convention** với `_hybrid` suffix
 - ✅ **Hybrid retriever với configurable alpha & rrf_k**
+- ✅ **Experiment tracking**: Auto-save results to CSV + JSON config
+- ✅ **Analysis tools**: Script để compare và analyze evaluation results
 
 ### In Progress:
 - 🔄 Implement semantic & hybrid chunking strategies
@@ -786,13 +788,89 @@ results = retriever.invoke("How to create a Wix event?")
 
 ### Planned:
 - 📋 **Metrics visualization** (plots, comparison tables)
-- 📋 **Experiment tracking** (save results to JSON/CSV)
 - 📋 **Statistical significance testing** (paired t-test, bootstrap)
 - 📋 **Reranker integration** (BAAI/bge-reranker-v2-m3)
-- 📋 **NDCG metric** (Normalized Discounted Cumulative Gain)
 - 📋 **Full sparse vector support** in Qdrant (SPLADE embeddings)
 - 📋 Add token counting & statistics
-- 📋 Support multiple output formats (Parquet, CSV)
+- 📋 Support multiple output formats (Parquet)
 - 📋 A/B testing framework cho chunking strategies
 - 📋 **Error analysis**: Analyze failed queries
 - 📋 **Per-category metrics**: Breakdown by article_type
+
+---
+
+## 📊 Evaluation Results Tracking
+
+### **New Feature**: Auto-save Results (Nov 9, 2025)
+
+`src/evaluate.py` now automatically saves all evaluation results to CSV and JSON for tracking experiments.
+
+### Files Structure
+
+```
+data/evaluate_results/
+├── README.md                          # Full documentation
+├── QUICKSTART.md                      # Quick start guide
+├── analyze_results.py                 # Analysis script
+├── evaluation_results.csv             # All results (append-only)
+├── exp_<timestamp>_config.json        # Per-experiment configs
+└── summary.json                       # Latest analysis summary
+```
+
+### Auto-saved Data
+
+**CSV** (`evaluation_results.csv`):
+- Append-only file với tất cả experiments
+- Columns: timestamp, experiment_id, config params, metrics
+- Format: Compatible với pandas, Excel
+
+**JSON** (`exp_<timestamp>_config.json`):
+- Full configuration cho mỗi experiment
+- Reproducibility: All params saved
+- Format: Human-readable JSON
+
+### Usage
+
+```bash
+# Run evaluation (auto-saves results)
+uv run src/evaluate.py --mode from_collection \
+  --collection chunks_recursive_380_50_baai_bge_small_en_v1_5 \
+  --top_k 5
+
+# Analyze all results
+uv run data/evaluate_results/analyze_results.py
+```
+
+### Saved Metrics
+
+**Document-level**: hit_rate@K, recall@K, precision@K, mrr@K, ndcg@K, coverage@K
+
+**Semantic-level**: hit_rate@K_semantic, recall@K_semantic, precision@K_semantic, mrr@K_semantic, ndcg@K_semantic, coverage@K_semantic
+
+### Saved Config
+
+- Pipeline: mode, collection_name, strategy, chunk_size, overlap, embedding_model, qdrant_path, retrieval_mode
+- Retriever: top_k, search_type, alpha, rrf_k
+- Evaluation: eval_method, num_queries, max_queries, retrieve_k, agg_mode, cosine_threshold
+
+### Analysis
+
+**Python**:
+```python
+import pandas as pd
+df = pd.read_csv('data/evaluate_results/evaluation_results.csv')
+
+# Compare configs
+df.groupby('chunk_size')[['hit_rate@5', 'mrr@5']].mean()
+
+# Find best
+best = df.loc[df['hit_rate@5'].idxmax()]
+```
+
+**Script**:
+```bash
+uv run data/evaluate_results/analyze_results.py
+# Shows: latest experiment, comparisons, top configs, summary
+```
+
+See `data/evaluate_results/README.md` for full documentation.

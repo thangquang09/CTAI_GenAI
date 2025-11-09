@@ -14,10 +14,13 @@ Pipeline modes:
 
 # Standard library imports
 import argparse
+import csv
+import json
 import os
 import subprocess
 import sys
 from collections import defaultdict
+from datetime import datetime
 from typing import Dict, List, Tuple, Any, Set
 
 # Third-party imports
@@ -887,6 +890,81 @@ def run_from_collection(
     return retriever
 
 
+# ==================== SAVE RESULTS ====================
+
+
+def save_evaluation_results(
+    metrics: Dict[str, float],
+    config: Dict[str, Any],
+    output_dir: str = "data/evaluate_results",
+) -> Tuple[str, str]:
+    """
+    Save evaluation results to CSV and config to JSON.
+
+    Args:
+        metrics: Dictionary of metric_name -> value
+        config: Dictionary of configuration parameters
+        output_dir: Directory to save results (default: data/evaluate_results)
+
+    Returns:
+        Tuple[str, str]: (csv_path, json_path)
+    """
+    # Create output directory
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Generate timestamp and experiment ID
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    experiment_id = f"exp_{timestamp}"
+
+    # Prepare config with metadata
+    full_config = {
+        "experiment_id": experiment_id,
+        "timestamp": timestamp,
+        **config,
+    }
+
+    # Save JSON config
+    json_path = os.path.join(output_dir, f"{experiment_id}_config.json")
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(full_config, f, indent=2, ensure_ascii=False)
+
+    print(f"[SAVED] Config: {json_path}")
+
+    # Save CSV results
+    csv_path = os.path.join(output_dir, "evaluation_results.csv")
+
+    # Check if CSV exists to determine if we need header
+    file_exists = os.path.exists(csv_path)
+
+    # Prepare CSV row
+    csv_row = {
+        "timestamp": timestamp,
+        "experiment_id": experiment_id,
+        **config,
+        **metrics,
+    }
+
+    # Write to CSV
+    with open(csv_path, "a", newline="", encoding="utf-8") as f:
+        # Get all fieldnames (union of config and metrics keys)
+        fieldnames = ["timestamp", "experiment_id"] + sorted(
+            set(list(config.keys()) + list(metrics.keys()))
+        )
+
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+        # Write header if file is new
+        if not file_exists:
+            writer.writeheader()
+
+        # Write data row
+        writer.writerow(csv_row)
+
+    print(f"[SAVED] Results: {csv_path}")
+
+    return csv_path, json_path
+
+
 # ==================== CLI ====================
 
 
@@ -1146,6 +1224,62 @@ def main():
     print("\nMetrics:")
     for metric_name, value in all_metrics.items():
         print(f"  {metric_name:30s} {value:.4f}")
+
+    # Prepare configuration for saving
+    # Extract strategy, chunk_size, overlap from collection name if mode=from_collection
+    if args.mode == "from_collection":
+        parts = collection_name.split("_")
+        # Try to extract info from collection name
+        # Example: chunks_recursive_380_50_baai_bge_small_en_v1_5
+        if len(parts) >= 4 and parts[0] == "chunks":
+            strategy = parts[1]
+            chunk_size = int(parts[2]) if parts[2].isdigit() else None
+            overlap = int(parts[3]) if parts[3].isdigit() else None
+        else:
+            strategy = None
+            chunk_size = None
+            overlap = None
+    else:
+        strategy = args.strategy
+        chunk_size = args.chunk_size
+        overlap = args.overlap
+
+    eval_config = {
+        # Pipeline config
+        "mode": args.mode,
+        "collection_name": collection_name,
+        "strategy": strategy,
+        "chunk_size": chunk_size,
+        "overlap": overlap,
+        "embedding_model": args.embedding_model,
+        "qdrant_path": args.qdrant_path,
+        "retrieval_mode": args.retrieval_mode,
+        # Retriever config
+        "top_k": args.top_k,
+        "search_type": args.search_type,
+        "alpha": args.alpha,
+        "rrf_k": args.rrf_k,
+        # Evaluation config
+        "eval_method": args.eval_method,
+        "num_queries": len(eval_data),
+        "max_queries": args.max_queries,
+        "retrieve_k": args.retrieve_k,
+        "agg_mode": args.agg_mode,
+        "cosine_threshold": args.cosine_threshold,
+    }
+
+    # Save results to CSV and config to JSON
+    csv_path, json_path = save_evaluation_results(
+        metrics=all_metrics,
+        config=eval_config,
+        output_dir="data/evaluate_results",
+    )
+
+    print("\n" + "=" * 80)
+    print("RESULTS SAVED SUCCESSFULLY")
+    print(f"  CSV: {csv_path}")
+    print(f"  JSON: {json_path}")
+    print("=" * 80)
 
 
 if __name__ == "__main__":
