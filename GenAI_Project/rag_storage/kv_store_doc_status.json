@@ -1,0 +1,280 @@
+{
+  "doc-2239d7ee716b06a690ab6e689a7e0756": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-2239d7ee716b06a690ab6e689a7e0756"
+    ],
+    "content_summary": "Email Marketing: Upgrading Your Email Marketing Plan\nTo get access to more email marketing features upgrade your email marketing plan and choose the package that works for your business.To upgrade your email marketing plan:\nGo to Email Marketing in y...",
+    "content_length": 607,
+    "created_at": "2025-11-10T12:31:24.342555+00:00",
+    "updated_at": "2025-11-10T12:32:25.333508+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762777884,
+      "processing_end_time": 1762777945
+    }
+  },
+  "doc-7f49a209ebbbdf633aeb86649c74ccef": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-7f49a209ebbbdf633aeb86649c74ccef"
+    ],
+    "content_summary": "Wix Stores: About Wix Stores\nWix Stores gives you all the tools you need to create a sleek, professional online store and grow your eCommerce business. Sell your own physical or digital products or expand your offerings by adding dropshipping items. ...",
+    "content_length": 4129,
+    "created_at": "2025-11-10T12:31:24.342498+00:00",
+    "updated_at": "2025-11-10T12:32:49.078277+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762777884,
+      "processing_end_time": 1762777969
+    }
+  },
+  "doc-1973d3e032da00271281064bc1f6048c": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-1973d3e032da00271281064bc1f6048c"
+    ],
+    "content_summary": "Google Workspace: Connecting a Business Email for a Domain Pointing to Wix\nIf you connected your domain to Wix via pointing and you purchased a Google Workspace business email, you must add the Google Workspace MX records in your domain host account ...",
+    "content_length": 1186,
+    "created_at": "2025-11-10T12:31:24.342547+00:00",
+    "updated_at": "2025-11-10T12:56:03.164022+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762779260,
+      "processing_end_time": 1762779363
+    }
+  },
+  "doc-fbc268218d68d573be9da6d5a3f5d710": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-a35c395eb2de6194b0d0b819cc25645d",
+      "chunk-e0f039145f41fa401d0e8e33a185f71a"
+    ],
+    "content_summary": "CMS: Hiding, Sorting, and Filtering Fields in Your Collection View\nManage the fields in your CMS (Content Management System) collection to keep them organized. You can choose which fields appear in your collection view and reorder them as needed. Add...",
+    "content_length": 6856,
+    "created_at": "2025-11-10T12:31:24.342580+00:00",
+    "updated_at": "2025-11-10T12:34:57.300955+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762777969,
+      "processing_end_time": 1762778097
+    }
+  },
+  "doc-549c7e8f1379f2d0735562e2a928d8f4": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-549c7e8f1379f2d0735562e2a928d8f4"
+    ],
+    "content_summary": "Importing Reservations from an External Calendar (iCal) to Wix Hotels\nImportant:This article refers to the original Wix Hotels. If you are using the new Wix Hotels by HotelRunner, which is not yet available to all users, please read the information h...",
+    "content_length": 1704,
+    "created_at": "2025-11-10T12:31:24.342489+00:00",
+    "updated_at": "2025-11-10T12:35:15.521361+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762777996,
+      "processing_end_time": 1762778115
+    }
+  },
+  "doc-9eb2916332bbcbddbdea2dea8c35ce03": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-9eb2916332bbcbddbdea2dea8c35ce03"
+    ],
+    "content_summary": "Using Your Free 1 Year Domain Voucher\nYou receive the 1 year free domain voucher with the initial purchase of selected yearly or multi-year Premium or Studio site plans. This voucher enables you to register a domain for free for one year. You can ren...",
+    "content_length": 3696,
+    "created_at": "2025-11-10T12:31:24.342572+00:00",
+    "updated_at": "2025-11-10T12:36:17.842496+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778097,
+      "processing_end_time": 1762778177
+    }
+  },
+  "doc-f03d0fb71474d85a2841236d0cc8f853": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-b547442ea82aacb3fc7acd39a219545d",
+      "chunk-b261bd1be516879bb4cf4c614f85d257"
+    ],
+    "content_summary": "Connecting PayPal as a Payment Provider\nImportant:As of March 7 2022, Wix no longer supports PayPal payments for any businesses, both new and existing, based in Russia.A PayPal business account is a great alternative to opening a credit card merchant...",
+    "content_length": 6938,
+    "created_at": "2025-11-10T12:31:24.342564+00:00",
+    "updated_at": "2025-11-10T12:39:41.566450+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778115,
+      "processing_end_time": 1762778381
+    }
+  },
+  "doc-dcdca8acc0fada3f7c19127bb6cbeb63": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-9db3104624f7e905203fda44fdb17afc",
+      "chunk-91eaa109ea24a162611fa773620ba020"
+    ],
+    "content_summary": "Wix Payments Verification Process\nImportant:Wix Payments is not yet available to all users.You can start accepting payments on your site using Wix Payments almost immediately. However,  we need to verify your identity before your account can be fully...",
+    "content_length": 8854,
+    "created_at": "2025-11-10T12:31:24.342532+00:00",
+    "updated_at": "2025-11-10T12:58:13.657709+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762779260,
+      "processing_end_time": 1762779493
+    }
+  },
+  "doc-11fcbe4f87372db8aaaa4dc2b55ebe20": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-11fcbe4f87372db8aaaa4dc2b55ebe20",
+      "chunk-49b02fc094271eb68d2f073c52deaf22"
+    ],
+    "content_summary": "Wix Bookings: About Wix Bookings\nWix Bookings is an easy-to-use scheduling system that lets your members book and pay for services online, so you can focus on managing your business.Whether you offer services like workshops, courses, or private sessi...",
+    "content_length": 5801,
+    "created_at": "2025-11-10T12:31:24.342523+00:00",
+    "updated_at": "2025-11-10T12:40:12.352330+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778251,
+      "processing_end_time": 1762778412
+    }
+  },
+  "doc-b4d8052bab145fa732f5fa1156e51a44": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-b4d8052bab145fa732f5fa1156e51a44"
+    ],
+    "content_summary": "CMS: Mirroring the Order of Items in Your Collection to Your Site's Connected Elements\nControl the order in which items display in their connected elements directly from your CMS collection. When you enable \"Mirror on Site\" in your collection view, c...",
+    "content_length": 4111,
+    "created_at": "2025-11-10T12:31:24.342540+00:00",
+    "updated_at": "2025-11-10T12:41:26.598159+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778382,
+      "processing_end_time": 1762778486
+    }
+  },
+  "doc-2f4c58a4c44dfbde08427cbc1914a45d": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-2f4c58a4c44dfbde08427cbc1914a45d"
+    ],
+    "content_summary": "Pricing Plans: Creating Discount Coupons\nDiscount coupons are a great way to encourage your clients to buy one of your pricing plans. You can choose to offer a price discount or a percentage discount coupon.You can also choose whether your discount c...",
+    "content_length": 2280,
+    "created_at": "2025-11-10T12:31:24.342505+00:00",
+    "updated_at": "2025-11-10T12:41:55.532587+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778412,
+      "processing_end_time": 1762778515
+    }
+  },
+  "doc-d760073a0d234238e3fd1428b7c21581": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-d760073a0d234238e3fd1428b7c21581"
+    ],
+    "content_summary": "Google Workspace: Manually Verifying Your Domain with Google\nIf your domain was once associated with a different owner, either in Google Workspace or in a Google Workspace reseller account, you may receive an error message similar to this in your Wix...",
+    "content_length": 1619,
+    "created_at": "2025-11-10T12:31:24.342480+00:00",
+    "updated_at": "2025-11-10T12:57:48.126091+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762779363,
+      "processing_end_time": 1762779468
+    }
+  },
+  "doc-4f913ed06c16cdc1c835dc4e177c1fee": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-4f913ed06c16cdc1c835dc4e177c1fee"
+    ],
+    "content_summary": "Changing the Email Address of Your Wix Account\nWhen you create a new Wix account, you can choose to sign up by entering an email address and password, or by using a social login (e.g. Google, Facebook). In either case, the email address you enter or ...",
+    "content_length": 3362,
+    "created_at": "2025-11-10T12:31:24.342441+00:00",
+    "updated_at": "2025-11-10T12:45:17.348947+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778515,
+      "processing_end_time": 1762778717
+    }
+  },
+  "doc-89214517fe93bdc5a93d035aacdbb757": {
+    "status": "processed",
+    "chunks_count": 3,
+    "chunks_list": [
+      "chunk-a0953e715dad6f364462f8aebf53207a",
+      "chunk-134de6c869a1bdf0a400dfea307efdce",
+      "chunk-bb89443093a62ed04b233cc893d59471"
+    ],
+    "content_summary": "CMS: Managing Your Collection Content\nManage your CMS (Content Management System) collection content from your site's dashboard or editor. Your collection consists of distinct fields and items, with each item's content stored in its fields. As you wo...",
+    "content_length": 12944,
+    "created_at": "2025-11-10T12:31:24.342588+00:00",
+    "updated_at": "2025-11-10T12:47:52.355974+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778569,
+      "processing_end_time": 1762778872
+    }
+  },
+  "doc-2500f2053a8609c7241fe3edad39c0a6": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-2500f2053a8609c7241fe3edad39c0a6"
+    ],
+    "content_summary": "Troubleshooting Third Party Provider Connection Issues\nIf you're experiencing difficulties connecting a third-party payment provider, you may be able to fix the issue by addressing the most common reasons.Click the issue you are having below: I can't...",
+    "content_length": 2877,
+    "created_at": "2025-11-10T12:31:24.342515+00:00",
+    "updated_at": "2025-11-10T12:47:19.068965+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778717,
+      "processing_end_time": 1762778839
+    }
+  },
+  "doc-6e3ee50229a1fd0f63f44682509cdfad": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-6e3ee50229a1fd0f63f44682509cdfad"
+    ],
+    "content_summary": "Recovering Your Wix Account\nYou can recover your Wix account if you've lost access to it. Follow the steps below if you can't access the email address that you use to sign in, or you can't sign into your Wix account for some other reason. Don't know ...",
+    "content_length": 3804,
+    "created_at": "2025-11-10T12:31:24.342595+00:00",
+    "updated_at": "2025-11-10T12:48:44.087052+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20251110_123124_17d2a1c0",
+    "metadata": {
+      "processing_start_time": 1762778839,
+      "processing_end_time": 1762778924
+    }
+  }
+}

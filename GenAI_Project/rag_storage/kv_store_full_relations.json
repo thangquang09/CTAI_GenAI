@@ -1,0 +1,1354 @@
+{
+  "doc-2239d7ee716b06a690ab6e689a7e0756": {
+    "relation_pairs": [
+      [
+        "Checkout",
+        "Package"
+      ],
+      [
+        "Dashboard",
+        "Monthly Balance"
+      ],
+      [
+        "Business",
+        "Email Marketing"
+      ],
+      [
+        "Email Marketing",
+        "Email Marketing Plan"
+      ],
+      [
+        "Email Marketing Plan",
+        "Upgrade"
+      ],
+      [
+        "Business",
+        "Package"
+      ],
+      [
+        "Dashboard",
+        "Email Marketing Plan"
+      ],
+      [
+        "Dashboard",
+        "Site"
+      ],
+      [
+        "Email Marketing Plan",
+        "Package"
+      ]
+    ],
+    "count": 9,
+    "create_time": 1762777945,
+    "update_time": 1762777945,
+    "_id": "doc-2239d7ee716b06a690ab6e689a7e0756"
+  },
+  "doc-7f49a209ebbbdf633aeb86649c74ccef": {
+    "relation_pairs": [
+      [
+        "Printify",
+        "Wix Stores"
+      ],
+      [
+        "PayPal",
+        "Wix Stores"
+      ],
+      [
+        "Dropshipping",
+        "Wix Stores"
+      ],
+      [
+        "Printful",
+        "Wix Stores"
+      ],
+      [
+        "Modalyst",
+        "Wix Stores"
+      ],
+      [
+        "Google",
+        "Wix Stores"
+      ],
+      [
+        "Avalara",
+        "Wix Stores"
+      ],
+      [
+        "Wix",
+        "Wix Stores"
+      ],
+      [
+        "Amazon",
+        "Wix Stores"
+      ],
+      [
+        "Wix Stores",
+        "eCommerce"
+      ],
+      [
+        "Spocket",
+        "Wix Stores"
+      ],
+      [
+        "Wix Payments",
+        "Wix Stores"
+      ],
+      [
+        "Wix Stores",
+        "eBay"
+      ],
+      [
+        "Wix Learn",
+        "Wix Stores"
+      ],
+      [
+        "Facebook",
+        "Wix Stores"
+      ]
+    ],
+    "count": 15,
+    "create_time": 1762777969,
+    "update_time": 1762777969,
+    "_id": "doc-7f49a209ebbbdf633aeb86649c74ccef"
+  },
+  "doc-fbc268218d68d573be9da6d5a3f5d710": {
+    "relation_pairs": [
+      [
+        "CMS",
+        "Sort"
+      ],
+      [
+        "Collection",
+        "Live Site"
+      ],
+      [
+        "Collection View",
+        "Mirror On Site Feature"
+      ],
+      [
+        "Collection",
+        "Sort"
+      ],
+      [
+        "CMS",
+        "Wix"
+      ],
+      [
+        "Datasets",
+        "Mirror On Site"
+      ],
+      [
+        "CMS",
+        "Filter"
+      ],
+      [
+        "Collection View",
+        "Item Visibility"
+      ],
+      [
+        "Field",
+        "Field Values"
+      ],
+      [
+        "Dataset",
+        "Field Type"
+      ],
+      [
+        "Collection",
+        "Filter"
+      ],
+      [
+        "Number Field Type",
+        "Text Field Type"
+      ],
+      [
+        "Dashboard",
+        "Editor"
+      ],
+      [
+        "Collection View",
+        "Fields"
+      ],
+      [
+        "CMS",
+        "Collection View"
+      ],
+      [
+        "CMS",
+        "FAQs"
+      ],
+      [
+        "Collection",
+        "Collection View"
+      ],
+      [
+        "Number Field Type",
+        "Numerical Sorting"
+      ],
+      [
+        "Alphabetic Sorting",
+        "Text Field Type"
+      ],
+      [
+        "Dataset",
+        "Site Elements"
+      ],
+      [
+        "Collection",
+        "Item"
+      ]
+    ],
+    "count": 21,
+    "create_time": 1762778097,
+    "update_time": 1762778097,
+    "_id": "doc-fbc268218d68d573be9da6d5a3f5d710"
+  },
+  "doc-549c7e8f1379f2d0735562e2a928d8f4": {
+    "relation_pairs": [
+      [
+        "HomeAway",
+        "Wix Hotels"
+      ],
+      [
+        "Payment Details",
+        "Wix Hotels Reservation Calendar"
+      ],
+      [
+        "Wix Hotels",
+        "Wix Hotels Channel Manager"
+      ],
+      [
+        "HotelRunner",
+        "Wix Hotels"
+      ],
+      [
+        "Hotels Tab",
+        "Reservations Tab"
+      ],
+      [
+        "Dashboard",
+        "Hotels Tab"
+      ],
+      [
+        "Wix Hotels",
+        "iCal"
+      ],
+      [
+        "Reservations Tab",
+        "iCal"
+      ],
+      [
+        "VRBO",
+        "Wix Hotels"
+      ],
+      [
+        "Dashboard",
+        "Wix Hotels"
+      ],
+      [
+        "Wix Hotels",
+        "Wix Hotels Reservation Calendar"
+      ],
+      [
+        "Airbnb",
+        "Wix Hotels"
+      ]
+    ],
+    "count": 12,
+    "create_time": 1762778115,
+    "update_time": 1762778115,
+    "_id": "doc-549c7e8f1379f2d0735562e2a928d8f4"
+  },
+  "doc-9eb2916332bbcbddbdea2dea8c35ce03": {
+    "relation_pairs": [
+      [
+        "WHOIS Domain Information Records",
+        "Wix"
+      ],
+      [
+        "Domain Voucher",
+        "Wix"
+      ],
+      [
+        "Domain Extensions",
+        "Domain Voucher"
+      ],
+      [
+        "Domain Voucher",
+        "Private Registration"
+      ],
+      [
+        "Collaborators",
+        "Site Owners"
+      ],
+      [
+        "Domain Registration",
+        "Domain Voucher"
+      ],
+      [
+        "Billing Managers",
+        "Wix"
+      ],
+      [
+        "Domain Voucher",
+        "Studio Site Plans"
+      ],
+      [
+        "Domain Voucher",
+        "Premium Site Plans"
+      ],
+      [
+        "Basic Protection",
+        "Full Privacy Protection"
+      ],
+      [
+        "Website Creation",
+        "Wix"
+      ],
+      [
+        "Billing Managers",
+        "Site Owners"
+      ]
+    ],
+    "count": 12,
+    "create_time": 1762778177,
+    "update_time": 1762778177,
+    "_id": "doc-9eb2916332bbcbddbdea2dea8c35ce03"
+  },
+  "doc-f03d0fb71474d85a2841236d0cc8f853": {
+    "relation_pairs": [
+      [
+        "PLN",
+        "PayPal"
+      ],
+      [
+        "PayPal",
+        "Wix"
+      ],
+      [
+        "Russia",
+        "Wix"
+      ],
+      [
+        "Troubleshooting",
+        "Wix"
+      ],
+      [
+        "Minimum Payment Threshold",
+        "Products"
+      ],
+      [
+        "NZD",
+        "PayPal"
+      ],
+      [
+        "Business & eCommerce Premium Plan",
+        "Wix"
+      ],
+      [
+        "Customers",
+        "Payment Provider"
+      ],
+      [
+        "MYR",
+        "PayPal"
+      ],
+      [
+        "India",
+        "PayPal"
+      ],
+      [
+        "PayPal Business Account",
+        "Wix Video"
+      ],
+      [
+        "DKK",
+        "PayPal"
+      ],
+      [
+        "PayPal",
+        "TWD"
+      ],
+      [
+        "HUF",
+        "PayPal"
+      ],
+      [
+        "Pay Later",
+        "PayPal"
+      ],
+      [
+        "BRL",
+        "PayPal"
+      ],
+      [
+        "HKD",
+        "PayPal"
+      ],
+      [
+        "PayPal",
+        "PayPal Checkout"
+      ],
+      [
+        "PayPal",
+        "SGD"
+      ],
+      [
+        "PayPal",
+        "Venmo"
+      ],
+      [
+        "PayPal",
+        "Pricing Plans"
+      ],
+      [
+        "Pricing Plans",
+        "Wix"
+      ],
+      [
+        "PHP",
+        "PayPal"
+      ],
+      [
+        "Minimum Payment Threshold",
+        "Services"
+      ],
+      [
+        "NOK",
+        "PayPal"
+      ],
+      [
+        "CAD",
+        "PayPal"
+      ],
+      [
+        "JPY",
+        "PayPal"
+      ],
+      [
+        "CZK",
+        "PayPal"
+      ],
+      [
+        "MXN",
+        "PayPal"
+      ],
+      [
+        "Customers",
+        "Wix"
+      ],
+      [
+        "Payment Provider",
+        "Recurring Payments"
+      ],
+      [
+        "US",
+        "Venmo"
+      ],
+      [
+        "GBP",
+        "PayPal"
+      ],
+      [
+        "CHF",
+        "PayPal"
+      ],
+      [
+        "Wix",
+        "Wix Payments"
+      ],
+      [
+        "AUD",
+        "PayPal"
+      ],
+      [
+        "ILS",
+        "PayPal"
+      ],
+      [
+        "PayPal",
+        "THB"
+      ],
+      [
+        "PayPal",
+        "PayPal Credit"
+      ],
+      [
+        "Minimum Payment Threshold",
+        "Pricing Plans"
+      ],
+      [
+        "Payment Provider",
+        "Wix"
+      ],
+      [
+        "PayPal",
+        "USD"
+      ],
+      [
+        "PayPal",
+        "SEK"
+      ],
+      [
+        "Minimum Payment Threshold",
+        "Payment Provider"
+      ],
+      [
+        "EUR",
+        "PayPal"
+      ]
+    ],
+    "count": 45,
+    "create_time": 1762778381,
+    "update_time": 1762778381,
+    "_id": "doc-f03d0fb71474d85a2841236d0cc8f853"
+  },
+  "doc-11fcbe4f87372db8aaaa4dc2b55ebe20": {
+    "relation_pairs": [
+      [
+        "Site",
+        "Site Dashboard"
+      ],
+      [
+        "Wix",
+        "Wix Bookings"
+      ],
+      [
+        "Wix Bookings",
+        "Workshops"
+      ],
+      [
+        "Bookings Tab",
+        "Contacts Tab"
+      ],
+      [
+        "Clients",
+        "SMS Reminders"
+      ],
+      [
+        "Contacts Tab",
+        "Site Dashboard"
+      ],
+      [
+        "Attendance Information",
+        "Clients"
+      ],
+      [
+        "SMS Reminders",
+        "Wix Bookings"
+      ],
+      [
+        "PayPal",
+        "Wix Bookings"
+      ],
+      [
+        "In-Person Payments",
+        "Wix Bookings"
+      ],
+      [
+        "Emails & SMS Reminders",
+        "Wix Bookings"
+      ],
+      [
+        "Membership Plans",
+        "Wix Bookings"
+      ],
+      [
+        "Private Sessions",
+        "Wix Bookings"
+      ],
+      [
+        "Booking Services",
+        "Wix Bookings"
+      ],
+      [
+        "Bookings Tab",
+        "Clients"
+      ],
+      [
+        "Reminder Emails",
+        "Wix Bookings"
+      ],
+      [
+        "Credit Card",
+        "Wix Bookings"
+      ],
+      [
+        "Courses",
+        "Wix Bookings"
+      ],
+      [
+        "Wix App Market",
+        "Wix Bookings"
+      ],
+      [
+        "Booking Form",
+        "Wix Bookings"
+      ],
+      [
+        "Contacts Tab",
+        "Wix Bookings"
+      ],
+      [
+        "Site Editor",
+        "Wix Bookings"
+      ],
+      [
+        "Clients",
+        "Payment Information"
+      ],
+      [
+        "Booking Calendar",
+        "Wix Bookings"
+      ],
+      [
+        "Booking Settings",
+        "Wix Bookings"
+      ],
+      [
+        "Payment Methods",
+        "Wix Bookings"
+      ]
+    ],
+    "count": 26,
+    "create_time": 1762778412,
+    "update_time": 1762778412,
+    "_id": "doc-11fcbe4f87372db8aaaa4dc2b55ebe20"
+  },
+  "doc-b4d8052bab145fa732f5fa1156e51a44": {
+    "relation_pairs": [
+      [
+        "Edit Icon",
+        "Sort Condition"
+      ],
+      [
+        "Collection",
+        "Table Layout"
+      ],
+      [
+        "Collection",
+        "Dataset"
+      ],
+      [
+        "Dataset",
+        "Mirror On Site"
+      ],
+      [
+        "Wix",
+        "Wix App Collections"
+      ],
+      [
+        "CSV File",
+        "Collection"
+      ],
+      [
+        "Dataset",
+        "Sort Condition"
+      ],
+      [
+        "Collection View",
+        "Site"
+      ],
+      [
+        "Wix",
+        "Wix Blocks Collections"
+      ],
+      [
+        "Collection View",
+        "Reorder Icon"
+      ],
+      [
+        "CMS",
+        "Collection View"
+      ],
+      [
+        "CMS",
+        "FAQs"
+      ],
+      [
+        "Collection View",
+        "Mirror On Site"
+      ]
+    ],
+    "count": 13,
+    "create_time": 1762778486,
+    "update_time": 1762778486,
+    "_id": "doc-b4d8052bab145fa732f5fa1156e51a44"
+  },
+  "doc-2f4c58a4c44dfbde08427cbc1914a45d": {
+    "relation_pairs": [
+      [
+        "Pricing Plans",
+        "Recurring Payments"
+      ],
+      [
+        "Discount Coupons",
+        "Pricing Plans"
+      ],
+      [
+        "Coupon Code",
+        "Discount Coupons"
+      ],
+      [
+        "Discount Coupons",
+        "Email Campaign"
+      ],
+      [
+        "Clients",
+        "Pricing Plans"
+      ],
+      [
+        "Email Campaign",
+        "Marketing & SEO"
+      ],
+      [
+        "Billing Cycle",
+        "Recurring Payments"
+      ],
+      [
+        "Discount Coupons",
+        "Wix Inbox"
+      ],
+      [
+        "Dashboard",
+        "Pricing Plans"
+      ],
+      [
+        "Discount Coupons",
+        "Setup Fees"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762778515,
+    "update_time": 1762778515,
+    "_id": "doc-2f4c58a4c44dfbde08427cbc1914a45d"
+  },
+  "doc-4f913ed06c16cdc1c835dc4e177c1fee": {
+    "relation_pairs": [
+      [
+        "Facebook",
+        "Wix"
+      ],
+      [
+        "Website",
+        "Wix"
+      ],
+      [
+        "Website",
+        "Wix Account"
+      ],
+      [
+        "Google",
+        "Wix"
+      ],
+      [
+        "Account Settings",
+        "Wix Account"
+      ],
+      [
+        "Wix Account",
+        "Wix Account Recovery"
+      ],
+      [
+        "Password Reset",
+        "Wix Account"
+      ],
+      [
+        "Email Address",
+        "Wix Account"
+      ],
+      [
+        "Wix",
+        "Wix Account"
+      ],
+      [
+        "Facebook",
+        "Social Login"
+      ],
+      [
+        "Password",
+        "Wix Account"
+      ],
+      [
+        "Google",
+        "Social Login"
+      ],
+      [
+        "Recovery Phone Number",
+        "Wix Account"
+      ]
+    ],
+    "count": 13,
+    "create_time": 1762778717,
+    "update_time": 1762778717,
+    "_id": "doc-4f913ed06c16cdc1c835dc4e177c1fee"
+  },
+  "doc-2500f2053a8609c7241fe3edad39c0a6": {
+    "relation_pairs": [
+      [
+        "API Keys",
+        "Payment Providers"
+      ],
+      [
+        "Wix",
+        "Wix Payments"
+      ],
+      [
+        "CBD Declaration",
+        "Wix Payments"
+      ],
+      [
+        "Credentials",
+        "Wix"
+      ],
+      [
+        "Accept Payments Tab",
+        "Currency"
+      ],
+      [
+        "Wix",
+        "Wix Customer Care"
+      ],
+      [
+        "PayU India",
+        "Wix"
+      ],
+      [
+        "Payment Providers",
+        "Wix"
+      ],
+      [
+        "Currency",
+        "Payment Providers"
+      ],
+      [
+        "Accept Payments Tab",
+        "Wix"
+      ],
+      [
+        "Restricted Products",
+        "Wix Payments"
+      ]
+    ],
+    "count": 11,
+    "create_time": 1762778839,
+    "update_time": 1762778839,
+    "_id": "doc-2500f2053a8609c7241fe3edad39c0a6"
+  },
+  "doc-89214517fe93bdc5a93d035aacdbb757": {
+    "relation_pairs": [
+      [
+        "Field Type",
+        "Rich Content Field"
+      ],
+      [
+        "Field Type",
+        "Text Field"
+      ],
+      [
+        "Date Field",
+        "Field Type"
+      ],
+      [
+        "CMS",
+        "Wix"
+      ],
+      [
+        "CMS Collections",
+        "Dynamic Pages"
+      ],
+      [
+        "Field Type",
+        "Time Field"
+      ],
+      [
+        "Collection",
+        "Pro Galleries"
+      ],
+      [
+        "Dataset",
+        "URL Slug"
+      ],
+      [
+        "Field Type",
+        "URL Field"
+      ],
+      [
+        "Collection Fields",
+        "Collection Item"
+      ],
+      [
+        "Field Type",
+        "Number Field"
+      ],
+      [
+        "Document Field",
+        "Field Type"
+      ],
+      [
+        "Dataset",
+        "Wix"
+      ],
+      [
+        "Address Field",
+        "Field Type"
+      ],
+      [
+        "Field",
+        "Item"
+      ],
+      [
+        "CMS",
+        "Collection"
+      ],
+      [
+        "Collection",
+        "Field Type"
+      ],
+      [
+        "Collection",
+        "Default Field Values"
+      ],
+      [
+        "Field Type",
+        "Reference Field"
+      ],
+      [
+        "Field Type",
+        "Video Field"
+      ],
+      [
+        "Collection",
+        "Indexes"
+      ],
+      [
+        "Collection",
+        "Dynamic Page"
+      ],
+      [
+        "Collection",
+        "Dataset"
+      ],
+      [
+        "Collection",
+        "Wix App"
+      ],
+      [
+        "CSV File",
+        "Mirror On Site"
+      ],
+      [
+        "Dataset",
+        "Page Element"
+      ],
+      [
+        "Dynamic Pages",
+        "URL Slug"
+      ],
+      [
+        "Boolean Field",
+        "Field Type"
+      ],
+      [
+        "Collection Fields",
+        "Dataset"
+      ],
+      [
+        "Dashboard",
+        "Editor"
+      ],
+      [
+        "Email Client",
+        "Wix"
+      ],
+      [
+        "Input Elements",
+        "Wix App"
+      ],
+      [
+        "Field Type",
+        "Field Validations"
+      ],
+      [
+        "List Layout",
+        "Table Layout"
+      ],
+      [
+        "Dataset",
+        "URL Field"
+      ],
+      [
+        "CMS",
+        "FAQs"
+      ],
+      [
+        "Field Type",
+        "Multi-Document Field"
+      ],
+      [
+        "Collection",
+        "Mirror On Site"
+      ],
+      [
+        "Field Type",
+        "Image Field"
+      ],
+      [
+        "Collection",
+        "Input Elements"
+      ],
+      [
+        "Field Type",
+        "Multi-Reference Field"
+      ],
+      [
+        "Collection",
+        "Collection View"
+      ],
+      [
+        "Collection",
+        "Field"
+      ],
+      [
+        "Collection",
+        "Permissions & Privacy"
+      ],
+      [
+        "Audio Field",
+        "Field Type"
+      ],
+      [
+        "CMS Collections",
+        "Wix"
+      ],
+      [
+        "Collection",
+        "Repeater"
+      ],
+      [
+        "Collection",
+        "Wix Multilingual"
+      ],
+      [
+        "Collection",
+        "Site Collaborators"
+      ],
+      [
+        "Dynamic Pages",
+        "Static Pages"
+      ],
+      [
+        "Field Type",
+        "Media Gallery"
+      ],
+      [
+        "Collection View",
+        "Mirror On Site"
+      ]
+    ],
+    "count": 52,
+    "create_time": 1762778872,
+    "update_time": 1762778872,
+    "_id": "doc-89214517fe93bdc5a93d035aacdbb757"
+  },
+  "doc-6e3ee50229a1fd0f63f44682509cdfad": {
+    "relation_pairs": [
+      [
+        "Customer Care Team",
+        "Wix Account Recovery Form"
+      ],
+      [
+        "Wix Account",
+        "Wix Log In Page"
+      ],
+      [
+        "Payment Method",
+        "Premium Site"
+      ],
+      [
+        "Wix",
+        "Wix Account"
+      ],
+      [
+        "Drivers License",
+        "Wix Account"
+      ],
+      [
+        "Premium Site",
+        "Wix Account"
+      ],
+      [
+        "IT Administrator",
+        "SSO Login"
+      ],
+      [
+        "Passport",
+        "Wix Account"
+      ],
+      [
+        "URL",
+        "Wix Account"
+      ],
+      [
+        "Wix",
+        "Wix Account Recovery Form"
+      ],
+      [
+        "Free Site",
+        "Wix Account"
+      ],
+      [
+        "Recovery Phone Number",
+        "Wix Account"
+      ]
+    ],
+    "count": 12,
+    "create_time": 1762778924,
+    "update_time": 1762778924,
+    "_id": "doc-6e3ee50229a1fd0f63f44682509cdfad"
+  },
+  "doc-1973d3e032da00271281064bc1f6048c": {
+    "relation_pairs": [
+      [
+        "Google Workspace",
+        "Wix"
+      ],
+      [
+        "ALT3.ASPMX.L.GOOGLE.COM",
+        "Google Workspace"
+      ],
+      [
+        "Domain Host",
+        "Wix"
+      ],
+      [
+        "ALT4.ASPMX.L.GOOGLE.COM",
+        "Google Workspace"
+      ],
+      [
+        "DNS Settings",
+        "Domain Host"
+      ],
+      [
+        "ASPMX.L.GOOGLE.COM",
+        "Google Workspace"
+      ],
+      [
+        "ALT2.ASPMX.L.GOOGLE.COM",
+        "Google Workspace"
+      ],
+      [
+        "Google",
+        "Google Workspace"
+      ],
+      [
+        "Domain Host",
+        "Google Workspace"
+      ],
+      [
+        "ALT1.ASPMX.L.GOOGLE.COM",
+        "Google Workspace"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762779363,
+    "update_time": 1762779363,
+    "_id": "doc-1973d3e032da00271281064bc1f6048c"
+  },
+  "doc-d760073a0d234238e3fd1428b7c21581": {
+    "relation_pairs": [
+      [
+        "Google Workspace",
+        "Wix"
+      ],
+      [
+        "Google Admin Console",
+        "TXT Record"
+      ],
+      [
+        "Google Admin Console",
+        "Google Workspace"
+      ],
+      [
+        "Google Workspace",
+        "Google Workspace Reseller"
+      ],
+      [
+        "DNS Records",
+        "Domain"
+      ],
+      [
+        "Business Email",
+        "Domain"
+      ],
+      [
+        "Business Email",
+        "Google Workspace"
+      ],
+      [
+        "Google Admin Console",
+        "Username"
+      ]
+    ],
+    "count": 8,
+    "create_time": 1762779468,
+    "update_time": 1762779468,
+    "_id": "doc-d760073a0d234238e3fd1428b7c21581"
+  },
+  "doc-dcdca8acc0fada3f7c19127bb6cbeb63": {
+    "relation_pairs": [
+      [
+        "Spain",
+        "Wix Payments"
+      ],
+      [
+        "Utility Bill",
+        "Wix Payments"
+      ],
+      [
+        "Bank Statement",
+        "Wix Payments"
+      ],
+      [
+        "Sole Proprietor Account",
+        "Wix Payments"
+      ],
+      [
+        "Wix Payments",
+        "Wix Payments Account"
+      ],
+      [
+        "Canada",
+        "Wix Payments"
+      ],
+      [
+        "Personal Bank Account",
+        "Sole Proprietor"
+      ],
+      [
+        "Austria",
+        "Wix Payments"
+      ],
+      [
+        "Netherlands",
+        "Wix Payments"
+      ],
+      [
+        "Portugal",
+        "Wix Payments"
+      ],
+      [
+        "Photo ID",
+        "Wix Payments"
+      ],
+      [
+        "Individual Account",
+        "Wix Payments"
+      ],
+      [
+        "Italy",
+        "Wix Payments"
+      ],
+      [
+        "Identity Verification",
+        "Wix Payments"
+      ],
+      [
+        "Address Verification",
+        "Wix Payments"
+      ],
+      [
+        "United States",
+        "Wix Payments"
+      ],
+      [
+        "Switzerland",
+        "Wix Payments"
+      ],
+      [
+        "Business Description",
+        "Wix Payments"
+      ],
+      [
+        "Individual Account",
+        "Sole Proprietor"
+      ],
+      [
+        "Sole Proprietor Account",
+        "Unique Taxpayer Reference"
+      ],
+      [
+        "Belgium",
+        "Wix Payments"
+      ],
+      [
+        "Codice Fiscale",
+        "Italy"
+      ],
+      [
+        "Adyen",
+        "Wix Payments"
+      ],
+      [
+        "Business Bank Account",
+        "Sole Proprietor"
+      ],
+      [
+        "Lithuania",
+        "Wix Payments"
+      ],
+      [
+        "Ireland",
+        "Wix Payments"
+      ],
+      [
+        "Verification Process",
+        "Wix Payments"
+      ],
+      [
+        "Wix",
+        "Wix Payments"
+      ],
+      [
+        "Bank Account",
+        "Wix Payments"
+      ],
+      [
+        "Business Type",
+        "Wix Payments"
+      ],
+      [
+        "UK",
+        "Unique Taxpayer Reference (UTR)"
+      ],
+      [
+        "Wix Customer Care",
+        "Wix Payments"
+      ],
+      [
+        "Finland",
+        "Wix Payments"
+      ],
+      [
+        "Business Account",
+        "Wix Payments"
+      ],
+      [
+        "Germany",
+        "Wix Payments"
+      ],
+      [
+        "Stripe",
+        "Wix Payments"
+      ],
+      [
+        "United Kingdom",
+        "Wix Payments"
+      ]
+    ],
+    "count": 37,
+    "create_time": 1762779493,
+    "update_time": 1762779493,
+    "_id": "doc-dcdca8acc0fada3f7c19127bb6cbeb63"
+  }
+}
