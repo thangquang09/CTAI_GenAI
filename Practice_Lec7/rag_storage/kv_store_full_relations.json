@@ -1,0 +1,1350 @@
+{
+  "doc-c6ebe08372383ae0b6cdaa9c889febe0": {
+    "relation_pairs": [
+      [
+        "Abdulaziz",
+        "Kingdom Of Saudi Arabia"
+      ],
+      [
+        "Al Saud",
+        "Wahhabi"
+      ],
+      [
+        "Abdulaziz",
+        "Al Saud"
+      ],
+      [
+        "Arabia",
+        "Najd"
+      ],
+      [
+        "Al Saud",
+        "Kingdom Of Saudi Arabia"
+      ],
+      [
+        "Abdulaziz",
+        "Wahhabi"
+      ],
+      [
+        "Al Saud",
+        "Najd"
+      ]
+    ],
+    "count": 7,
+    "create_time": 1762759746,
+    "update_time": 1762759746,
+    "_id": "doc-c6ebe08372383ae0b6cdaa9c889febe0"
+  },
+  "doc-486e66c727f008362546daffcf7f00ef": {
+    "relation_pairs": [
+      [
+        "First Deputy Minister of Defense",
+        "Soviet Union"
+      ],
+      [
+        "Chief of the Unified Staff",
+        "Soviet Union"
+      ],
+      [
+        "Political Consultative Committee",
+        "Warsaw Pact"
+      ],
+      [
+        "Soviet Armed Forces",
+        "Soviet Union"
+      ],
+      [
+        "Soviet Armed Forces",
+        "Unified Armed Forces Command"
+      ],
+      [
+        "Chief of the Unified Staff",
+        "General Staff"
+      ],
+      [
+        "Soviet Union",
+        "Supreme Commander"
+      ],
+      [
+        "Unified Armed Forces Command",
+        "Warsaw"
+      ],
+      [
+        "Soviet Union",
+        "Warsaw Pact"
+      ],
+      [
+        "Unified Armed Forces Command",
+        "Warsaw Pact"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762759796,
+    "update_time": 1762759796,
+    "_id": "doc-486e66c727f008362546daffcf7f00ef"
+  },
+  "doc-850bc72f231e1f6d811a407808929038": {
+    "relation_pairs": [
+      [
+        "1991",
+        "Mauro Scocco"
+      ],
+      [
+        "Mauro Scocco",
+        "Till Dom Ensamma"
+      ],
+      [
+        "Dr. Space Dagbok",
+        "Till Dom Ensamma"
+      ],
+      [
+        "Dr. Space Dagbok",
+        "Mauro Scocco"
+      ]
+    ],
+    "count": 4,
+    "create_time": 1762759816,
+    "update_time": 1762759816,
+    "_id": "doc-850bc72f231e1f6d811a407808929038"
+  },
+  "doc-bd9e41e2ff2f81e02d083d63ce5b9622": {
+    "relation_pairs": [
+      [
+        "Barcelona",
+        "Lionel Messi"
+      ],
+      [
+        "Barcelona",
+        "La Liga"
+      ],
+      [
+        "Barcelona",
+        "Eto'O"
+      ],
+      [
+        "America",
+        "Barcelona"
+      ],
+      [
+        "La Liga",
+        "Real Madrid"
+      ],
+      [
+        "Barcelona",
+        "FIFA Club World Cup 2006"
+      ],
+      [
+        "Eto'O",
+        "Frank Rijkaard"
+      ],
+      [
+        "FIFA Club World Cup 2006",
+        "Internacional"
+      ],
+      [
+        "Champions League",
+        "Liverpool"
+      ],
+      [
+        "Copa Del Rey",
+        "Getafe"
+      ],
+      [
+        "Barcelona",
+        "Champions League"
+      ],
+      [
+        "Barcelona",
+        "Ronaldinho"
+      ],
+      [
+        "Barcelona",
+        "Copa Del Rey"
+      ],
+      [
+        "Eto'O",
+        "Ronaldinho"
+      ],
+      [
+        "Frank Rijkaard",
+        "Ronaldinho"
+      ],
+      [
+        "Diego Maradona",
+        "Lionel Messi"
+      ]
+    ],
+    "count": 16,
+    "create_time": 1762759878,
+    "update_time": 1762759878,
+    "_id": "doc-bd9e41e2ff2f81e02d083d63ce5b9622"
+  },
+  "doc-9ccfcc8ae72c71338439751b2049620e": {
+    "relation_pairs": [
+      [
+        "Erik Hort",
+        "Montebello"
+      ],
+      [
+        "American Soccer",
+        "Erik Hort"
+      ],
+      [
+        "Erik Hort",
+        "New York"
+      ]
+    ],
+    "count": 3,
+    "create_time": 1762759891,
+    "update_time": 1762759891,
+    "_id": "doc-9ccfcc8ae72c71338439751b2049620e"
+  },
+  "doc-95fffad7bb844b20e5c2c1147efb40b2": {
+    "relation_pairs": [
+      [
+        "Jerusalem",
+        "Tel Aviv"
+      ],
+      [
+        "Egypt",
+        "Israel"
+      ],
+      [
+        "Israel",
+        "Red Sea"
+      ],
+      [
+        "Gaza Strip",
+        "Palestine"
+      ],
+      [
+        "Arabic",
+        "Israel"
+      ],
+      [
+        "Hebrew",
+        "Israel"
+      ],
+      [
+        "Israel",
+        "Jordan"
+      ],
+      [
+        "Israel",
+        "Syria"
+      ],
+      [
+        "Israel",
+        "Palestine"
+      ],
+      [
+        "Palestine",
+        "West Bank"
+      ],
+      [
+        "East Jerusalem",
+        "Israel"
+      ],
+      [
+        "Israel",
+        "Mediterranean Sea"
+      ],
+      [
+        "Israel",
+        "Lebanon"
+      ],
+      [
+        "Gaza Strip",
+        "Israel"
+      ],
+      [
+        "Israel",
+        "Middle East"
+      ],
+      [
+        "Israel",
+        "Tel Aviv"
+      ],
+      [
+        "Israel",
+        "Jerusalem"
+      ],
+      [
+        "Israel",
+        "West Bank"
+      ]
+    ],
+    "count": 18,
+    "create_time": 1762759945,
+    "update_time": 1762759945,
+    "_id": "doc-95fffad7bb844b20e5c2c1147efb40b2"
+  },
+  "doc-50f54ed7616e6306569d9e0b1d380443": {
+    "relation_pairs": [
+      [
+        "Santa Monica",
+        "The Right Stuff Records"
+      ],
+      [
+        "The Right Stuff Records",
+        "Universal Music Group"
+      ],
+      [
+        "EMI",
+        "The Right Stuff Records"
+      ],
+      [
+        "Hãng Đĩa The Right Stuff",
+        "The Right Stuff Records"
+      ]
+    ],
+    "count": 4,
+    "create_time": 1762759964,
+    "update_time": 1762759964,
+    "_id": "doc-50f54ed7616e6306569d9e0b1d380443"
+  },
+  "doc-6e30a9ded2dae16da789664c5cc98b6a": {
+    "relation_pairs": [
+      [
+        "Chain Of Lakes",
+        "Minneapolis"
+      ],
+      [
+        "Saint Paul",
+        "Thủ phủ"
+      ],
+      [
+        "Minneapolis",
+        "Twin Cities"
+      ],
+      [
+        "Minneapolis",
+        "Mississippi River"
+      ],
+      [
+        "Minneapolis",
+        "Saint Paul"
+      ],
+      [
+        "Chicago",
+        "Minneapolis"
+      ],
+      [
+        "Minneapolis",
+        "Seattle"
+      ],
+      [
+        "Grand Rounds National Scenic Byway",
+        "Minneapolis"
+      ],
+      [
+        "Minneapolis",
+        "Minnesota River"
+      ],
+      [
+        "Hoa Kỳ",
+        "Minneapolis"
+      ],
+      [
+        "Fortune 500",
+        "Minneapolis"
+      ]
+    ],
+    "count": 11,
+    "create_time": 1762760005,
+    "update_time": 1762760005,
+    "_id": "doc-6e30a9ded2dae16da789664c5cc98b6a"
+  },
+  "doc-adc3204c0fc39c11f59547bd2e76c414": {
+    "relation_pairs": [
+      [
+        "California",
+        "Gaspar De Portolà"
+      ],
+      [
+        "Gaspar De Portolà",
+        "Juan Crespí"
+      ],
+      [
+        "Juan Crespí",
+        "Santa Monica"
+      ],
+      [
+        "Kuruvungna Springs",
+        "Santa Monica"
+      ],
+      [
+        "Santa Monica",
+        "Tongva"
+      ],
+      [
+        "Saint Augustine",
+        "Saint Monica"
+      ],
+      [
+        "California",
+        "Santa Monica"
+      ],
+      [
+        "California",
+        "Tongva"
+      ],
+      [
+        "Gaspar De Portolà",
+        "Santa Monica"
+      ]
+    ],
+    "count": 9,
+    "create_time": 1762760044,
+    "update_time": 1762760044,
+    "_id": "doc-adc3204c0fc39c11f59547bd2e76c414"
+  },
+  "doc-f2e0878e3deb8e67aadac2bcad2c3840": {
+    "relation_pairs": [
+      [
+        "Các Quốc Gia Baltic",
+        "Liên Xô"
+      ],
+      [
+        "European Security",
+        "Liên Xô"
+      ],
+      [
+        "European Security",
+        "Đức"
+      ],
+      [
+        "Liên Xô",
+        "Đức"
+      ],
+      [
+        "Liên Xô",
+        "Phần Lan"
+      ],
+      [
+        "Liên Xô",
+        "Thỏa Thuận Quân Sự"
+      ],
+      [
+        "Anh",
+        "Liên Xô"
+      ],
+      [
+        "Liên Xô",
+        "Molotov-Ribbentrop Pact"
+      ],
+      [
+        "Anh",
+        "Baltic States"
+      ]
+    ],
+    "count": 9,
+    "create_time": 1762760088,
+    "update_time": 1762760088,
+    "_id": "doc-f2e0878e3deb8e67aadac2bcad2c3840"
+  },
+  "doc-68225f8af0db7090316f8464c418b2d8": {
+    "relation_pairs": [
+      [
+        "Ralph Rapson",
+        "Thư Viện Đông Nam"
+      ],
+      [
+        "December 26",
+        "Thư Viện Đông Nam"
+      ],
+      [
+        "Thư Viện Đông Nam",
+        "Đường Đông Nam Thứ 4"
+      ],
+      [
+        "Ralph Rapson",
+        "Tòa Nhà Công Đoàn Tín Dụng Capitol Nhà Nước"
+      ],
+      [
+        "Thư Viện Đông Nam",
+        "Tòa Nhà Công Đoàn Tín Dụng Capitol Nhà Nước"
+      ],
+      [
+        "December 29",
+        "Tòa Nhà Công Đoàn Tín Dụng Capitol Nhà Nước"
+      ]
+    ],
+    "count": 6,
+    "create_time": 1762760115,
+    "update_time": 1762760115,
+    "_id": "doc-68225f8af0db7090316f8464c418b2d8"
+  },
+  "doc-38dedc927ff355b21763b3b48f2f7c53": {
+    "relation_pairs": [
+      [
+        "Kingdom Of Saudi Arabia",
+        "United Arab Emirates"
+      ],
+      [
+        "Kingdom Of Saudi Arabia",
+        "Oman"
+      ],
+      [
+        "Arabian Peninsula",
+        "Kingdom Of Saudi Arabia"
+      ],
+      [
+        "International Shipping",
+        "Persian Gulf"
+      ],
+      [
+        "Kingdom Of Saudi Arabia",
+        "Red Sea"
+      ],
+      [
+        "Kingdom Of Saudi Arabia",
+        "Yemen"
+      ],
+      [
+        "Kingdom Of Saudi Arabia",
+        "Persian Gulf"
+      ],
+      [
+        "International Shipping",
+        "Kingdom Of Saudi Arabia"
+      ],
+      [
+        "Kingdom Of Saudi Arabia",
+        "Suez Canal"
+      ],
+      [
+        "International Shipping",
+        "Red Sea"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762760170,
+    "update_time": 1762760170,
+    "_id": "doc-38dedc927ff355b21763b3b48f2f7c53"
+  },
+  "doc-1ab11114eb647650006113e1a75a6795": {
+    "relation_pairs": [
+      [
+        "Dãy núi Rocky",
+        "North America"
+      ],
+      [
+        "Sông Mississippi",
+        "United States"
+      ],
+      [
+        "Minnesota",
+        "Sông Mississippi"
+      ],
+      [
+        "Dãy núi Appalachian",
+        "Sông Mississippi"
+      ],
+      [
+        "Hoa Kỳ",
+        "Sông Mississippi"
+      ],
+      [
+        "Sông Mississippi",
+        "Tennessee"
+      ],
+      [
+        "Canada",
+        "Sông Mississippi"
+      ],
+      [
+        "Sông Mississippi",
+        "Wisconsin"
+      ],
+      [
+        "North America",
+        "Sông Mississippi"
+      ],
+      [
+        "Sông Mississippi",
+        "Vịnh Hudson"
+      ],
+      [
+        "Dãy núi Rocky",
+        "Sông Mississippi"
+      ],
+      [
+        "Missouri",
+        "Sông Mississippi"
+      ],
+      [
+        "Illinois",
+        "Sông Mississippi"
+      ],
+      [
+        "Arkansas",
+        "Sông Mississippi"
+      ],
+      [
+        "North America",
+        "Vịnh Hudson"
+      ],
+      [
+        "Sông Mississippi",
+        "Vịnh Mexico"
+      ],
+      [
+        "Kentucky",
+        "Sông Mississippi"
+      ],
+      [
+        "Mississippi",
+        "Sông Mississippi"
+      ],
+      [
+        "Louisiana",
+        "Sông Mississippi"
+      ],
+      [
+        "Delta Sông Mississippi",
+        "Sông Mississippi"
+      ],
+      [
+        "Iowa",
+        "Sông Mississippi"
+      ],
+      [
+        "Dãy núi Appalachian",
+        "North America"
+      ]
+    ],
+    "count": 22,
+    "create_time": 1762760240,
+    "update_time": 1762760240,
+    "_id": "doc-1ab11114eb647650006113e1a75a6795"
+  },
+  "doc-08d6f0bf2b314359366316f99f488378": {
+    "relation_pairs": [
+      [
+        "Brutalist Style",
+        "Ralph Rapson"
+      ],
+      [
+        "Augsburg University",
+        "Riverside Plaza"
+      ],
+      [
+        "McKnight Building",
+        "Riverside Plaza"
+      ],
+      [
+        "Riverside Plaza",
+        "University Of Minnesota's West Bank"
+      ],
+      [
+        "Cedar-Riverside",
+        "Riverside Plaza"
+      ],
+      [
+        "Minneapolis",
+        "Riverside Plaza"
+      ],
+      [
+        "Cedar Square West",
+        "Riverside Plaza"
+      ],
+      [
+        "Mary Richards",
+        "Riverside Plaza"
+      ],
+      [
+        "Riverside Plaza",
+        "The Mary Tyler Moore Show"
+      ],
+      [
+        "1973",
+        "Riverside Plaza"
+      ],
+      [
+        "Ralph Rapson",
+        "Riverside Plaza"
+      ]
+    ],
+    "count": 11,
+    "create_time": 1762760283,
+    "update_time": 1762760283,
+    "_id": "doc-08d6f0bf2b314359366316f99f488378"
+  },
+  "doc-d979bb212c5c106a6e5d1419a8b52dde": {
+    "relation_pairs": [
+      [
+        "Johan Ekelund",
+        "Mauro Scocco"
+      ],
+      [
+        "Mauro Scocco",
+        "Plura Jonsson"
+      ],
+      [
+        "1962",
+        "Mauro Scocco"
+      ],
+      [
+        "Italy",
+        "Mauro Scocco"
+      ],
+      [
+        "Mauro Scocco",
+        "Ratata"
+      ],
+      [
+        "Ratata",
+        "Sweden"
+      ],
+      [
+        "Mauro Scocco",
+        "Sweden"
+      ],
+      [
+        "Mauro Scocco",
+        "September 11"
+      ],
+      [
+        "Mauro & Plura",
+        "Mauro Scocco"
+      ]
+    ],
+    "count": 9,
+    "create_time": 1762760313,
+    "update_time": 1762760313,
+    "_id": "doc-d979bb212c5c106a6e5d1419a8b52dde"
+  },
+  "doc-c3049b7f967365d1cd4c1f03a5fed0ca": {
+    "relation_pairs": [
+      [
+        "David Johnson-Davies",
+        "January 1986"
+      ],
+      [
+        "Superior Software",
+        "Topologika"
+      ],
+      [
+        "Acornsoft",
+        "David Johnson-Davies"
+      ],
+      [
+        "Acornsoft",
+        "Superior Software"
+      ],
+      [
+        "Acorn Computers",
+        "Acornsoft"
+      ],
+      [
+        "Acornsoft Hits",
+        "Superior Software"
+      ],
+      [
+        "Acornsoft",
+        "VIEW"
+      ],
+      [
+        "Acornsoft",
+        "Topologika"
+      ],
+      [
+        "Acorn Computers",
+        "BBC Master"
+      ],
+      [
+        "Play It Again Sam",
+        "Superior Software"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762760357,
+    "update_time": 1762760357,
+    "_id": "doc-c3049b7f967365d1cd4c1f03a5fed0ca"
+  },
+  "doc-af42d1124f930ea854e148b3ba24336e": {
+    "relation_pairs": [
+      [
+        "Leofric",
+        "Mercia"
+      ],
+      [
+        "Mercia",
+        "Ælfgār"
+      ],
+      [
+        "Godiva",
+        "Leicester"
+      ],
+      [
+        "Tu Viện Croyland",
+        "Tu Viện Spalding"
+      ],
+      [
+        "Godiva",
+        "Leofric"
+      ],
+      [
+        "Norman Conquest",
+        "Tu Viện Spalding"
+      ],
+      [
+        "Tu Viện Spalding",
+        "Ælfgār"
+      ],
+      [
+        "Leofric",
+        "Tu Viện Spalding"
+      ],
+      [
+        "Mercia",
+        "Tu Viện Spalding"
+      ],
+      [
+        "Leofric",
+        "Ælfgār"
+      ]
+    ],
+    "count": 10,
+    "create_time": 1762760387,
+    "update_time": 1762760387,
+    "_id": "doc-af42d1124f930ea854e148b3ba24336e"
+  },
+  "doc-722a4775e444634179656eb949544784": {
+    "relation_pairs": [
+      [
+        "Acornsoft",
+        "Video Game"
+      ],
+      [
+        "Labyrinth",
+        "Video Game"
+      ],
+      [
+        "BBC Micro",
+        "Labyrinth"
+      ],
+      [
+        "BBC Micro",
+        "Video Game"
+      ],
+      [
+        "Acornsoft",
+        "BBC Micro"
+      ],
+      [
+        "Acornsoft",
+        "Labyrinth"
+      ]
+    ],
+    "count": 6,
+    "create_time": 1762760415,
+    "update_time": 1762760415,
+    "_id": "doc-722a4775e444634179656eb949544784"
+  },
+  "doc-14464818832b463077c96594c9ce4195": {
+    "relation_pairs": [
+      [
+        "Bay Trên Koop",
+        "Jazz"
+      ],
+      [
+        "Stanton Moore",
+        "Tipitina's"
+      ],
+      [
+        "Jazz Fest 2000",
+        "Stanton Moore"
+      ],
+      [
+        "Bay Trên Koop",
+        "Rock"
+      ],
+      [
+        "Bay Trên Koop",
+        "Funk"
+      ],
+      [
+        "New Orleans",
+        "Stanton Moore"
+      ],
+      [
+        "Jazz Fest 2000",
+        "Tipitina's"
+      ],
+      [
+        "Bay Trên Koop",
+        "Stanton Moore"
+      ]
+    ],
+    "count": 8,
+    "create_time": 1762760441,
+    "update_time": 1762760441,
+    "_id": "doc-14464818832b463077c96594c9ce4195"
+  },
+  "doc-458fd4afe8bd60effeed101770b58ad0": {
+    "relation_pairs": [
+      [
+        "Szlachta",
+        "Vua Ba Lan"
+      ],
+      [
+        "Jagiellon",
+        "Piast"
+      ],
+      [
+        "Szlachta",
+        "Tự Do Vàng"
+      ],
+      [
+        "Ba Lan",
+        "Szlachta"
+      ],
+      [
+        "Khối Thịnh Vượng Chung Ba Lan - Litva",
+        "Triều Đình Cai Trị"
+      ],
+      [
+        "Ba Lan",
+        "Giai Cấp Quý Tộc"
+      ],
+      [
+        "Giai Cấp Quý Tộc",
+        "Tự Do Vàng"
+      ],
+      [
+        "Ba Lan",
+        "Khối Thịnh Vượng Chung Ba Lan - Litva"
+      ]
+    ],
+    "count": 8,
+    "create_time": 1762760477,
+    "update_time": 1762760477,
+    "_id": "doc-458fd4afe8bd60effeed101770b58ad0"
+  },
+  "doc-fe1c531afdd274fbd03428d88551cbbc": {
+    "relation_pairs": [
+      [
+        "Loạt Sút Luân Lưu",
+        "Steaua Bucureşti"
+      ],
+      [
+        "Luis",
+        "Real Madrid"
+      ],
+      [
+        "FC Barcelona",
+        "Luis"
+      ],
+      [
+        "FC Barcelona",
+        "Terry Venables"
+      ],
+      [
+        "Cúp C1 Châu Âu",
+        "Seville"
+      ],
+      [
+        "Diego Maradona",
+        "FC Barcelona"
+      ],
+      [
+        "FC Barcelona",
+        "Steaua Bucureşti"
+      ],
+      [
+        "Bernd Schuster",
+        "Terry Venables"
+      ],
+      [
+        "Diego Maradona",
+        "Napoli"
+      ],
+      [
+        "Bernd Schuster",
+        "FC Barcelona"
+      ],
+      [
+        "Copa del Rey",
+        "FC Barcelona"
+      ]
+    ],
+    "count": 11,
+    "create_time": 1762760525,
+    "update_time": 1762760525,
+    "_id": "doc-fe1c531afdd274fbd03428d88551cbbc"
+  },
+  "doc-fa97256698dffab54472e08e63a436db": {
+    "relation_pairs": [
+      [
+        "Avan Ivan",
+        "Suchitra"
+      ],
+      [
+        "Theeradha Vilaiyattu Pillai",
+        "Yuvan Shankar Raja"
+      ],
+      [
+        "Krish",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Goa",
+        "Krish"
+      ],
+      [
+        "Avan Ivan",
+        "Yuvan Shankar Raja"
+      ],
+      [
+        "Ranjith",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Goa",
+        "Yuvan Shankar Raja"
+      ],
+      [
+        "Vilaiyaadu Mankatha",
+        "Vinaitha"
+      ],
+      [
+        "Ranjith",
+        "Theeradha Vilaiyattu Pillai"
+      ],
+      [
+        "Chynk Showtyme",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Yogi",
+        "Yuvan Shankar Raja"
+      ],
+      [
+        "Vilaiyaadu Mankatha",
+        "Yuvan Shankar Raja"
+      ],
+      [
+        "Neha Bhasin",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Sony Music Entertainment",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Suchitra",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Tanvi Shah",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Blaaze",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Pav Bundy",
+        "Vilaiyaadu Mankatha"
+      ],
+      [
+        "Andrea Jeremiah",
+        "Vilaiyaadu Mankatha"
+      ]
+    ],
+    "count": 19,
+    "create_time": 1762760589,
+    "update_time": 1762760589,
+    "_id": "doc-fa97256698dffab54472e08e63a436db"
+  },
+  "doc-fa52c6d20627f7d264318460f6b0c94c": {
+    "relation_pairs": [
+      [
+        "Sony Corporation",
+        "United States"
+      ],
+      [
+        "Sony Corporation of America",
+        "Sony Music Entertainment Inc."
+      ],
+      [
+        "CBS Records",
+        "Columbia Recording Corporation"
+      ],
+      [
+        "Japan",
+        "Sony Corporation of America"
+      ],
+      [
+        "American Record Corporation",
+        "Columbia Recording Corporation"
+      ],
+      [
+        "CBS",
+        "Columbia Recording Corporation"
+      ],
+      [
+        "Japan",
+        "Sony Music Entertainment Inc."
+      ],
+      [
+        "CBS Records",
+        "Sony Music Entertainment Inc."
+      ],
+      [
+        "American Record Corporation",
+        "United States"
+      ],
+      [
+        "Sony Corporation",
+        "Sony Corporation of America"
+      ],
+      [
+        "Sony Music Entertainment Inc.",
+        "Universal Music Group"
+      ]
+    ],
+    "count": 11,
+    "create_time": 1762760630,
+    "update_time": 1762760630,
+    "_id": "doc-fa52c6d20627f7d264318460f6b0c94c"
+  },
+  "doc-1bbd99041ee4fbff54b413ccec4d161a": {
+    "relation_pairs": [
+      [
+        "Trận Qurah Và Umm Al Maradim",
+        "Umm Al Maradim"
+      ],
+      [
+        "Persian Gulf",
+        "Trận Qurah Và Umm Al Maradim"
+      ],
+      [
+        "Kuwait",
+        "Vịnh Ba Tư"
+      ],
+      [
+        "Umm Al Maradim",
+        "Vịnh Ba Tư"
+      ],
+      [
+        "Qurah",
+        "Vịnh Ba Tư"
+      ],
+      [
+        "Qurah",
+        "Trận Qurah Và Umm Al Maradim"
+      ],
+      [
+        "Kuwait",
+        "Umm Al Maradim"
+      ],
+      [
+        "Kuwait",
+        "Qurah"
+      ]
+    ],
+    "count": 8,
+    "create_time": 1762760660,
+    "update_time": 1762760660,
+    "_id": "doc-1bbd99041ee4fbff54b413ccec4d161a"
+  },
+  "doc-b8c3484d6ebf125e04802dac99352d9e": {
+    "relation_pairs": [
+      [
+        "Airmont",
+        "United States"
+      ],
+      [
+        "Rockland County",
+        "United States"
+      ],
+      [
+        "Montebello",
+        "United States"
+      ],
+      [
+        "Suffern",
+        "United States"
+      ],
+      [
+        "Montebello",
+        "New York"
+      ],
+      [
+        "Montebello",
+        "Ramapo"
+      ],
+      [
+        "Montebello",
+        "Suffern"
+      ],
+      [
+        "Ramapo",
+        "Rockland County"
+      ],
+      [
+        "Hillburn",
+        "Montebello"
+      ],
+      [
+        "Hillburn",
+        "United States"
+      ],
+      [
+        "New York",
+        "Rockland County"
+      ],
+      [
+        "United States",
+        "Wesley Hills"
+      ],
+      [
+        "Montebello",
+        "Wesley Hills"
+      ],
+      [
+        "Airmont",
+        "Montebello"
+      ],
+      [
+        "Ramapo",
+        "United States"
+      ]
+    ],
+    "count": 15,
+    "create_time": 1762760702,
+    "update_time": 1762760702,
+    "_id": "doc-b8c3484d6ebf125e04802dac99352d9e"
+  },
+  "doc-b6ad3388ea1674e0141b9f69b2ecce83": {
+    "relation_pairs": [
+      [
+        "Hoa Kỳ",
+        "United States"
+      ],
+      [
+        "Edward Pakenham",
+        "Trận New Orleans"
+      ],
+      [
+        "Andrew Jackson",
+        "Trận New Orleans"
+      ],
+      [
+        "Hoa Kỳ",
+        "Louisiana Purchase"
+      ],
+      [
+        "Andrew Jackson",
+        "United States"
+      ],
+      [
+        "British Empire",
+        "Edward Pakenham"
+      ],
+      [
+        "Louisiana Purchase",
+        "United States"
+      ],
+      [
+        "New Orleans",
+        "Trận New Orleans"
+      ],
+      [
+        "Alexander Cochrane",
+        "Trận New Orleans"
+      ],
+      [
+        "Chiến tranh năm 1812",
+        "Trận New Orleans"
+      ],
+      [
+        "France",
+        "Louisiana Purchase"
+      ],
+      [
+        "Alexander Cochrane",
+        "British Empire"
+      ]
+    ],
+    "count": 12,
+    "create_time": 1762760746,
+    "update_time": 1762760746,
+    "_id": "doc-b6ad3388ea1674e0141b9f69b2ecce83"
+  },
+  "doc-7ab57139ca98d385189fc31165ce9a2e": {
+    "relation_pairs": [
+      [
+        "Ælfwynn",
+        "Æthelflæd"
+      ],
+      [
+        "Edward",
+        "Ælfwynn"
+      ],
+      [
+        "Wessex",
+        "Ælfwynn"
+      ],
+      [
+        "Ælfwynn",
+        "Æthelred"
+      ],
+      [
+        "Æthelflæd",
+        "Æthelred"
+      ],
+      [
+        "Edward",
+        "Mercia"
+      ],
+      [
+        "Mercia",
+        "Æthelflæd"
+      ],
+      [
+        "Mercia",
+        "Ælfwynn"
+      ]
+    ],
+    "count": 8,
+    "create_time": 1762760778,
+    "update_time": 1762760778,
+    "_id": "doc-7ab57139ca98d385189fc31165ce9a2e"
+  },
+  "doc-68aabfb7a0f379da64557a4b32418d61": {
+    "relation_pairs": [
+      [
+        "III",
+        "Robert Walter"
+      ],
+      [
+        "Robert Walter",
+        "Stanton Moore"
+      ],
+      [
+        "III",
+        "Stanton Moore"
+      ],
+      [
+        "1970s-Style Funk",
+        "Stanton Moore"
+      ],
+      [
+        "Stanton Moore",
+        "Will Bernard"
+      ],
+      [
+        "III",
+        "Will Bernard"
+      ]
+    ],
+    "count": 6,
+    "create_time": 1762760802,
+    "update_time": 1762760802,
+    "_id": "doc-68aabfb7a0f379da64557a4b32418d61"
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "doc-c6ebe08372383ae0b6cdaa9c889febe0": {
+    "entity_names": [
+      "Arabia",
+      "Kingdom Of Saudi Arabia",
+      "Abdulaziz",
+      "Wahhabi",
+      "Al Saud",
+      "Najd"
+    ],
+    "count": 6,
+    "create_time": 1762759746,
+    "update_time": 1762759746,
+    "_id": "doc-c6ebe08372383ae0b6cdaa9c889febe0"
+  },
+  "doc-486e66c727f008362546daffcf7f00ef": {
+    "entity_names": [
+      "First Deputy Minister of Defense",
+      "Soviet Union",
+      "Soviet Armed Forces",
+      "Warsaw",
+      "Poland",
+      "General Staff",
+      "Unified Armed Forces Command",
+      "Warsaw Pact",
+      "Chief of the Unified Staff",
+      "Supreme Commander",
+      "Political Consultative Committee"
+    ],
+    "count": 11,
+    "create_time": 1762759796,
+    "update_time": 1762759796,
+    "_id": "doc-486e66c727f008362546daffcf7f00ef"
+  },
+  "doc-850bc72f231e1f6d811a407808929038": {
+    "entity_names": [
+      "Till Dom Ensamma",
+      "Mauro Scocco",
+      "Dr. Space Dagbok",
+      "1991",
+      "Disco"
+    ],
+    "count": 5,
+    "create_time": 1762759816,
+    "update_time": 1762759816,
+    "_id": "doc-850bc72f231e1f6d811a407808929038"
+  },
+  "doc-bd9e41e2ff2f81e02d083d63ce5b9622": {
+    "entity_names": [
+      "Real Madrid",
+      "Copa Del Rey",
+      "Lionel Messi",
+      "Ronaldinho",
+      "Champions League",
+      "America",
+      "Pre-Season Tour",
+      "Liverpool",
+      "Frank Rijkaard",
+      "Getafe",
+      "Barcelona",
+      "FIFA Club World Cup 2006",
+      "Internacional",
+      "Eto'O",
+      "La Liga",
+      "Diego Maradona"
+    ],
+    "count": 16,
+    "create_time": 1762759878,
+    "update_time": 1762759878,
+    "_id": "doc-bd9e41e2ff2f81e02d083d63ce5b9622"
+  },
+  "doc-9ccfcc8ae72c71338439751b2049620e": {
+    "entity_names": [
+      "Montebello",
+      "New York",
+      "American Soccer",
+      "Erik Hort"
+    ],
+    "count": 4,
+    "create_time": 1762759891,
+    "update_time": 1762759891,
+    "_id": "doc-9ccfcc8ae72c71338439751b2049620e"
+  },
+  "doc-95fffad7bb844b20e5c2c1147efb40b2": {
+    "entity_names": [
+      "East Jerusalem",
+      "Mediterranean Sea",
+      "Arabic",
+      "Gaza Strip",
+      "Tel Aviv",
+      "Lebanon",
+      "Middle East",
+      "Red Sea",
+      "Israel",
+      "Jordan",
+      "Jerusalem",
+      "Egypt",
+      "West Bank",
+      "Palestine",
+      "Syria",
+      "Hebrew"
+    ],
+    "count": 16,
+    "create_time": 1762759945,
+    "update_time": 1762759945,
+    "_id": "doc-95fffad7bb844b20e5c2c1147efb40b2"
+  },
+  "doc-50f54ed7616e6306569d9e0b1d380443": {
+    "entity_names": [
+      "Universal Music Group",
+      "Santa Monica",
+      "California",
+      "EMI",
+      "Hãng Đĩa The Right Stuff",
+      "The Right Stuff Records"
+    ],
+    "count": 6,
+    "create_time": 1762759964,
+    "update_time": 1762759964,
+    "_id": "doc-50f54ed7616e6306569d9e0b1d380443"
+  },
+  "doc-6e30a9ded2dae16da789664c5cc98b6a": {
+    "entity_names": [
+      "Saint Paul",
+      "Chain Of Lakes",
+      "Seattle",
+      "Chicago",
+      "Minneapolis",
+      "Hoa Kỳ",
+      "Grand Rounds National Scenic Byway",
+      "Mississippi River",
+      "Twin Cities",
+      "Minnesota River",
+      "Fortune 500",
+      "Thủ phủ"
+    ],
+    "count": 12,
+    "create_time": 1762760005,
+    "update_time": 1762760005,
+    "_id": "doc-6e30a9ded2dae16da789664c5cc98b6a"
+  },
+  "doc-adc3204c0fc39c11f59547bd2e76c414": {
+    "entity_names": [
+      "Tongva",
+      "Saint Augustine",
+      "Kuruvungna Springs",
+      "Santa Monica",
+      "Ohio Avenue",
+      "California",
+      "Gaspar De Portolà",
+      "Barrington Avenue",
+      "Saint Monica",
+      "Augustine",
+      "Juan Crespí"
+    ],
+    "count": 11,
+    "create_time": 1762760044,
+    "update_time": 1762760044,
+    "_id": "doc-adc3204c0fc39c11f59547bd2e76c414"
+  },
+  "doc-f2e0878e3deb8e67aadac2bcad2c3840": {
+    "entity_names": [
+      "Liên Xô",
+      "Molotov-Ribbentrop Pact",
+      "German Aggression",
+      "Đức",
+      "Baltic States",
+      "European Security",
+      "Phần Lan",
+      "Thỏa Thuận Quân Sự",
+      "Các Quốc Gia Baltic",
+      "Anh"
+    ],
+    "count": 10,
+    "create_time": 1762760088,
+    "update_time": 1762760088,
+    "_id": "doc-f2e0878e3deb8e67aadac2bcad2c3840"
+  },
+  "doc-68225f8af0db7090316f8464c418b2d8": {
+    "entity_names": [
+      "Thư Viện Đông Nam",
+      "Đường Đông Nam Thứ 4",
+      "Tòa Nhà Công Đoàn Tín Dụng Capitol Nhà Nước",
+      "December 29",
+      "1966",
+      "December 26",
+      "Ralph Rapson",
+      "1967",
+      "Thư Viện"
+    ],
+    "count": 9,
+    "create_time": 1762760115,
+    "update_time": 1762760115,
+    "_id": "doc-68225f8af0db7090316f8464c418b2d8"
+  },
+  "doc-38dedc927ff355b21763b3b48f2f7c53": {
+    "entity_names": [
+      "Mediterranean Sea",
+      "Suez Canal",
+      "Yemen",
+      "Arabia",
+      "United Arab Emirates",
+      "Red Sea",
+      "Oman",
+      "Persian Gulf",
+      "Kingdom Of Saudi Arabia",
+      "Arabian Peninsula",
+      "International Shipping",
+      "Western Asia"
+    ],
+    "count": 12,
+    "create_time": 1762760170,
+    "update_time": 1762760170,
+    "_id": "doc-38dedc927ff355b21763b3b48f2f7c53"
+  },
+  "doc-1ab11114eb647650006113e1a75a6795": {
+    "entity_names": [
+      "Iowa",
+      "Arkansas",
+      "Tennessee",
+      "North America",
+      "Dãy núi Appalachian",
+      "Mississippi",
+      "Sông Mississippi",
+      "Illinois",
+      "Missouri",
+      "Louisiana",
+      "Minnesota",
+      "Dãy núi Rocky",
+      "Hoa Kỳ",
+      "Wisconsin",
+      "Vịnh Hudson",
+      "United States",
+      "Kentucky",
+      "Delta Sông Mississippi",
+      "Canada",
+      "Vịnh Mexico"
+    ],
+    "count": 20,
+    "create_time": 1762760240,
+    "update_time": 1762760240,
+    "_id": "doc-1ab11114eb647650006113e1a75a6795"
+  },
+  "doc-08d6f0bf2b314359366316f99f488378": {
+    "entity_names": [
+      "Brutalist Style",
+      "McKnight Building",
+      "Riverside Plaza",
+      "The Mary Tyler Moore Show",
+      "Minnesota",
+      "Augsburg University",
+      "1973",
+      "Cedar-Riverside",
+      "Minneapolis",
+      "Cedar Square West",
+      "Mary Richards",
+      "Ralph Rapson",
+      "University Of Minnesota's West Bank"
+    ],
+    "count": 13,
+    "create_time": 1762760283,
+    "update_time": 1762760283,
+    "_id": "doc-08d6f0bf2b314359366316f99f488378"
+  },
+  "doc-d979bb212c5c106a6e5d1419a8b52dde": {
+    "entity_names": [
+      "Mauro & Plura",
+      "Ratata",
+      "Johan Ekelund",
+      "Sweden",
+      "Mauro Scocco",
+      "September 11",
+      "Italy",
+      "1962",
+      "Plura Jonsson"
+    ],
+    "count": 9,
+    "create_time": 1762760313,
+    "update_time": 1762760313,
+    "_id": "doc-d979bb212c5c106a6e5d1419a8b52dde"
+  },
+  "doc-c3049b7f967365d1cd4c1f03a5fed0ca": {
+    "entity_names": [
+      "Acornsoft Hits",
+      "Acorn Computers",
+      "Topologika",
+      "VIEW",
+      "January 1986",
+      "Acornsoft",
+      "Superior Software",
+      "BBC Master",
+      "Play It Again Sam",
+      "David Johnson-Davies"
+    ],
+    "count": 10,
+    "create_time": 1762760357,
+    "update_time": 1762760357,
+    "_id": "doc-c3049b7f967365d1cd4c1f03a5fed0ca"
+  },
+  "doc-af42d1124f930ea854e148b3ba24336e": {
+    "entity_names": [
+      "Tu Viện Spalding",
+      "Leicester",
+      "Godiva",
+      "Norman Conquest",
+      "Ælfgār",
+      "Leofric",
+      "Mercia",
+      "Tu Viện Croyland",
+      "Anh"
+    ],
+    "count": 9,
+    "create_time": 1762760387,
+    "update_time": 1762760387,
+    "_id": "doc-af42d1124f930ea854e148b3ba24336e"
+  },
+  "doc-722a4775e444634179656eb949544784": {
+    "entity_names": [
+      "Labyrinth",
+      "BBC Micro",
+      "Acornsoft",
+      "1984",
+      "Video Game"
+    ],
+    "count": 5,
+    "create_time": 1762760415,
+    "update_time": 1762760415,
+    "_id": "doc-722a4775e444634179656eb949544784"
+  },
+  "doc-14464818832b463077c96594c9ce4195": {
+    "entity_names": [
+      "Bay Trên Koop",
+      "Rock",
+      "Funk",
+      "New Orleans",
+      "Tipitina's",
+      "Stanton Moore",
+      "Jazz Fest 2000",
+      "SuperJam",
+      "Jazz"
+    ],
+    "count": 9,
+    "create_time": 1762760441,
+    "update_time": 1762760441,
+    "_id": "doc-14464818832b463077c96594c9ce4195"
+  },
+  "doc-458fd4afe8bd60effeed101770b58ad0": {
+    "entity_names": [
+      "Szlachta",
+      "Khối Thịnh Vượng Chung Ba Lan - Litva",
+      "Piast",
+      "Triều Đình Cai Trị",
+      "Jagiellon",
+      "Vua Ba Lan",
+      "Giai Cấp Quý Tộc",
+      "Tự Do Vàng",
+      "Ba Lan"
+    ],
+    "count": 9,
+    "create_time": 1762760477,
+    "update_time": 1762760477,
+    "_id": "doc-458fd4afe8bd60effeed101770b58ad0"
+  },
+  "doc-fe1c531afdd274fbd03428d88551cbbc": {
+    "entity_names": [
+      "Real Madrid",
+      "Steaua Bucureşti",
+      "Bernd Schuster",
+      "Terry Venables",
+      "Seville",
+      "Napoli",
+      "FC Barcelona",
+      "Luis",
+      "Cúp C1 Châu Âu",
+      "Loạt Sút Luân Lưu",
+      "Mùa Giải 1984-85",
+      "Copa del Rey",
+      "Boca Juniors",
+      "La Liga",
+      "Diego Maradona"
+    ],
+    "count": 15,
+    "create_time": 1762760525,
+    "update_time": 1762760525,
+    "_id": "doc-fe1c531afdd274fbd03428d88551cbbc"
+  },
+  "doc-fa97256698dffab54472e08e63a436db": {
+    "entity_names": [
+      "Blaaze",
+      "Tanvi Shah",
+      "Chynk Showtyme",
+      "Dia Dia Dole",
+      "Theeradha Vilaiyattu Pillai",
+      "Pav Bundy",
+      "Krish",
+      "Goa",
+      "Ranjith",
+      "Andrea Jeremiah",
+      "Sony Music Entertainment",
+      "Vilaiyaadu Mankatha",
+      "Yogi Yogi Thaan",
+      "Vinaitha",
+      "Suchitra",
+      "Yogi",
+      "Neha Bhasin",
+      "Yuvan Shankar Raja",
+      "Avan Ivan"
+    ],
+    "count": 19,
+    "create_time": 1762760589,
+    "update_time": 1762760589,
+    "_id": "doc-fa97256698dffab54472e08e63a436db"
+  },
+  "doc-fa52c6d20627f7d264318460f6b0c94c": {
+    "entity_names": [
+      "Columbia Recording Corporation",
+      "1938",
+      "Universal Music Group",
+      "Japan",
+      "Sony Corporation of America",
+      "Sony Corporation",
+      "Sony Music Entertainment Inc.",
+      "CBS Records",
+      "1966",
+      "American Record Corporation",
+      "United States",
+      "CBS",
+      "1991",
+      "1987",
+      "1929"
+    ],
+    "count": 15,
+    "create_time": 1762760630,
+    "update_time": 1762760630,
+    "_id": "doc-fa52c6d20627f7d264318460f6b0c94c"
+  },
+  "doc-1bbd99041ee4fbff54b413ccec4d161a": {
+    "entity_names": [
+      "Kuwait",
+      "Trận Qurah Và Umm Al Maradim",
+      "Qurah",
+      "Persian Gulf",
+      "Umm Al Maradim",
+      "Vịnh Ba Tư"
+    ],
+    "count": 6,
+    "create_time": 1762760660,
+    "update_time": 1762760660,
+    "_id": "doc-1bbd99041ee4fbff54b413ccec4d161a"
+  },
+  "doc-b8c3484d6ebf125e04802dac99352d9e": {
+    "entity_names": [
+      "United States",
+      "United States Census",
+      "Ramapo",
+      "Suffern",
+      "Montebello",
+      "New York",
+      "Airmont",
+      "Wesley Hills",
+      "Rockland County",
+      "Hillburn"
+    ],
+    "count": 10,
+    "create_time": 1762760702,
+    "update_time": 1762760702,
+    "_id": "doc-b8c3484d6ebf125e04802dac99352d9e"
+  },
+  "doc-b6ad3388ea1674e0141b9f69b2ecce83": {
+    "entity_names": [
+      "Trận New Orleans",
+      "Louisiana Purchase",
+      "Hoa Kỳ",
+      "New Orleans",
+      "France",
+      "Alexander Cochrane",
+      "Chiến tranh năm 1812",
+      "Edward Pakenham",
+      "United States",
+      "Andrew Jackson",
+      "British Empire"
+    ],
+    "count": 11,
+    "create_time": 1762760746,
+    "update_time": 1762760746,
+    "_id": "doc-b6ad3388ea1674e0141b9f69b2ecce83"
+  },
+  "doc-7ab57139ca98d385189fc31165ce9a2e": {
+    "entity_names": [
+      "Wessex",
+      "Æthelred",
+      "Edward",
+      "Ælfwynn",
+      "Phu Nhân Thứ Hai Của Người Mercia",
+      "Æthelflæd",
+      "Mercia"
+    ],
+    "count": 7,
+    "create_time": 1762760778,
+    "update_time": 1762760778,
+    "_id": "doc-7ab57139ca98d385189fc31165ce9a2e"
+  },
+  "doc-68aabfb7a0f379da64557a4b32418d61": {
+    "entity_names": [
+      "1970s-Style Funk",
+      "Robert Walter",
+      "Stanton Moore",
+      "Will Bernard",
+      "III"
+    ],
+    "count": 5,
+    "create_time": 1762760802,
+    "update_time": 1762760802,
+    "_id": "doc-68aabfb7a0f379da64557a4b32418d61"
+  }
+}
