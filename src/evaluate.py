@@ -167,8 +167,10 @@ def run_vectorstore_pipeline(
             f"{chunks_basename}_{embedding_safe}"
         )
         
-        # Add mode suffix for hybrid
-        if mode == "hybrid":
+        # Add mode suffix
+        if mode == "native_hybrid":
+            collection_name = f"{collection_name}_native_hybrid"
+        elif mode == "hybrid":
             collection_name = f"{collection_name}_hybrid"
 
     print(f"[SUCCESS] Collection created: {collection_name}")
@@ -1052,20 +1054,20 @@ Examples:
         "--retrieval_mode",
         type=str,
         default="dense",
-        choices=["dense", "hybrid"],
-        help="Retrieval mode: dense (vector only) or hybrid (dense + BM25)",
+        choices=["dense", "native_hybrid", "hybrid"],
+        help="Retrieval mode: dense (vector only), native_hybrid (Qdrant internal), or hybrid (BM25+RRF)",
     )
     parser.add_argument(
         "--alpha",
         type=float,
         default=0.5,
-        help="Hybrid mode weight: 0=sparse only, 1=dense only (default=0.5)",
+        help="Custom hybrid mode weight: 0=sparse only, 1=dense only (default=0.5, not used for native_hybrid)",
     )
     parser.add_argument(
         "--rrf_k",
         type=int,
         default=60,
-        help="RRF parameter for hybrid mode (default=60)",
+        help="RRF parameter for custom hybrid mode (default=60, not used for native_hybrid)",
     )
 
     # Retriever params
@@ -1154,11 +1156,14 @@ def main():
         collection_name = sanitize_collection_name(
             f"{chunks_basename}_{embedding_safe}"
         )
-        if args.retrieval_mode == "hybrid":
+        if args.retrieval_mode == "native_hybrid":
+            collection_name = f"{collection_name}_native_hybrid"
+        elif args.retrieval_mode == "hybrid":
             collection_name = f"{collection_name}_hybrid"
     else:  # from_collection
-        # Auto-detect chunks_file if not provided
-        if not chunks_file and args.collection.endswith("_hybrid"):
+        # Auto-detect chunks_file if not provided (only for custom hybrid)
+        # Native hybrid does NOT need chunks_file because sparse vectors are in Qdrant
+        if not chunks_file and args.collection.endswith("_hybrid") and not args.collection.endswith("_native_hybrid"):
             # Try to infer chunks_file from collection name
             # Example: chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid
             # -> chunks_recursive_380_50.jsonl
@@ -1169,7 +1174,7 @@ def main():
                 size = parts[2] if len(parts) > 2 else "380"
                 overlap = parts[3] if len(parts) > 3 else "50"
                 chunks_file = f"data/chunks/chunks_{strategy}_{size}_{overlap}.jsonl"
-                print(f"⚠️  Auto-detected chunks_file: {chunks_file}")
+                print(f"⚠️  Auto-detected chunks_file for custom hybrid: {chunks_file}")
                 print("   (If incorrect, please provide --chunks_file explicitly)")
         
         retriever = run_from_collection(
@@ -1245,8 +1250,9 @@ def main():
         overlap = args.overlap
 
     # Determine actual search type based on retrieval mode
-    # For hybrid mode, search_type should be "hybrid_rrf" not "similarity"
-    if args.retrieval_mode == "hybrid":
+    if args.retrieval_mode == "native_hybrid":
+        actual_search_type = "native_hybrid"
+    elif args.retrieval_mode == "hybrid":
         actual_search_type = "hybrid_rrf"
     else:
         actual_search_type = args.search_type

@@ -35,7 +35,7 @@ from langchain_core.retrievers import BaseRetriever
 from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
 
-from langchain_qdrant import QdrantVectorStore
+from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
 
 
 def sanitize_collection_name(name: str) -> str:
@@ -65,19 +65,25 @@ def detect_retriever_mode(collection_name: str) -> str:
     Auto-detect retriever mode from collection name.
     
     Args:
-        collection_name: Collection name (may contain _hybrid suffix)
+        collection_name: Collection name (may contain _hybrid or _native_hybrid suffix)
         
     Returns:
-        "hybrid" if collection ends with "_hybrid", else "dense"
+        "native_hybrid" if collection ends with "_native_hybrid"
+        "hybrid" if collection ends with "_hybrid" (but not _native_hybrid)
+        "dense" otherwise
         
     Examples:
+        >>> detect_retriever_mode("chunks_recursive_380_50_baai_bge_small_en_v1_5_native_hybrid")
+        "native_hybrid"
         >>> detect_retriever_mode("chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid")
         "hybrid"
         >>> detect_retriever_mode("chunks_recursive_380_50_baai_bge_small_en_v1_5")
         "dense"
     """
     collection_name_lower = collection_name.lower()
-    if collection_name_lower.endswith("_hybrid"):
+    if collection_name_lower.endswith("_native_hybrid"):
+        return "native_hybrid"
+    elif collection_name_lower.endswith("_hybrid"):
         return "hybrid"
     return "dense"
 
@@ -127,7 +133,7 @@ def build_retriever(
     """
     Build a retriever from existing Qdrant collection.
     
-    Supports both dense-only and hybrid (dense + BM25) retrieval.
+    Supports dense, native hybrid (Qdrant internal), and custom hybrid (BM25+RRF) retrieval.
     
     Args:
         collection_name: Tên collection trong Qdrant (sẽ được sanitize)
@@ -139,18 +145,22 @@ def build_retriever(
             - {"score_threshold": 0.5} - threshold cho similarity_score_threshold
             - {"fetch_k": 20, "lambda_mult": 0.5} - cho MMR mode
         use_grpc: Sử dụng gRPC cho local client
-        mode: Retrieval mode - "dense", "hybrid", hoặc None (auto-detect from collection name)
-        chunks_file: Path to JSONL chunks file (required for hybrid mode)
-        alpha: Hybrid mode weight (0=sparse only, 1=dense only, 0.5=equal)
-        rrf_k: RRF parameter for hybrid mode (default=60)
+        mode: Retrieval mode - "dense", "native_hybrid", "hybrid", hoặc None (auto-detect)
+        chunks_file: Path to JSONL chunks file (required for custom hybrid mode)
+        alpha: Custom hybrid mode weight (0=sparse only, 1=dense only, 0.5=equal)
+        rrf_k: RRF parameter for custom hybrid mode (default=60)
     
     Returns:
         BaseRetriever: LangChain retriever object có thể dùng .invoke(query)
     
     Modes:
         - "dense": Vector similarity search only (default)
-        - "hybrid": Dense + BM25 with Reciprocal Rank Fusion
-        - None: Auto-detect from collection name (collections ending with "_hybrid" use hybrid mode)
+        - "native_hybrid": Qdrant native hybrid (dense + sparse BM25 vectors)
+        - "hybrid": Custom hybrid with external BM25 + RRF fusion (legacy)
+        - None: Auto-detect from collection name
+            - "_native_hybrid" suffix → native_hybrid mode
+            - "_hybrid" suffix → custom hybrid mode
+            - otherwise → dense mode
     
     Examples:
         >>> # Dense retrieval (default)
@@ -159,19 +169,18 @@ def build_retriever(
         ...     search_kwargs={"k": 5}
         ... )
         
-        >>> # Hybrid retrieval (explicit)
+        >>> # Native hybrid retrieval (auto-detect)
+        >>> retriever = build_retriever(
+        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_native_hybrid"
+        ... )  # Auto-detects native_hybrid mode from "_native_hybrid" suffix
+        
+        >>> # Custom hybrid retrieval (requires chunks_file)
         >>> retriever = build_retriever(
         ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
         ...     mode="hybrid",
         ...     chunks_file="data/chunks/chunks_recursive_380_50.jsonl",
         ...     alpha=0.5  # Equal weight
         ... )
-        
-        >>> # Hybrid retrieval (auto-detect)
-        >>> retriever = build_retriever(
-        ...     collection_name="chunks_recursive_380_50_baai_bge_small_en_v1_5_hybrid",
-        ...     chunks_file="data/chunks/chunks_recursive_380_50.jsonl"
-        ... )  # Auto-detects hybrid mode from "_hybrid" suffix
     """
     # Sanitize collection name
     collection_name = sanitize_collection_name(collection_name)
@@ -210,41 +219,75 @@ def build_retriever(
         encode_kwargs={"normalize_embeddings": True}
     )
     
-    # Initialize vector store
-    vector_store = QdrantVectorStore(
-        client=QdrantClient(path=qdrant_path, prefer_grpc=use_grpc),
-        collection_name=collection_name,
-        embedding=embeddings,
-    )
-    
     # Default search kwargs
     default_search_kwargs = {"k": 5}  # LangChain default is 4, we use 5
     if search_kwargs:
         default_search_kwargs.update(search_kwargs)
     
-    # Build dense retriever first
-    dense_retriever = vector_store.as_retriever(
-        search_type=search_type,
-        search_kwargs=default_search_kwargs,
-    )
+    # Return retriever based on mode
+    if mode == "native_hybrid":
+        # Native hybrid mode - Qdrant handles dense + sparse internally
+        print("\n🔧 Building native hybrid retriever...")
+        print("   Mode: Native Hybrid (Qdrant dense + sparse BM25)")
+        
+        # Initialize sparse embeddings
+        sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
+        
+        # Initialize vector store with sparse embedding and hybrid retrieval mode
+        vector_store_hybrid = QdrantVectorStore(
+            client=QdrantClient(path=qdrant_path, prefer_grpc=use_grpc),
+            collection_name=collection_name,
+            embedding=embeddings,
+            sparse_embedding=sparse_embeddings,
+            retrieval_mode=RetrievalMode.HYBRID,
+            vector_name="dense",
+            sparse_vector_name="sparse",
+        )
+        
+        # Build retriever
+        retriever = vector_store_hybrid.as_retriever(
+            search_type=search_type,
+            search_kwargs=default_search_kwargs,
+        )
+        
+        print("✅ Native hybrid retriever ready!")
+        print(f"   Retriever type: {type(retriever).__name__}")
+        print(f"   Search type: {search_type}")
+        print(f"   Top-k: {default_search_kwargs['k']}")
+        
+        return retriever
     
-    # Return hybrid or dense retriever based on mode
-    if mode == "hybrid":
+    elif mode == "hybrid":
+        # Custom hybrid mode with BM25 + RRF (legacy)
+        print("\n🔧 Building custom hybrid retriever...")
+        print("   Mode: Custom Hybrid (Dense + BM25 with RRF)")
+        print(f"   Alpha: {alpha} (0=sparse only, 1=dense only)")
+        print(f"   RRF k: {rrf_k}")
+        
         # Hybrid mode requires chunks_file
         if not chunks_file:
             raise ValueError(
-                "Hybrid mode requires chunks_file parameter. "
+                "Custom hybrid mode requires chunks_file parameter. "
                 "Please provide path to JSONL chunks file."
             )
         
         if not os.path.exists(chunks_file):
             raise FileNotFoundError(f"Chunks file not found: {chunks_file}")
         
+        # Initialize vector store for dense retrieval
+        vector_store = QdrantVectorStore(
+            client=QdrantClient(path=qdrant_path, prefer_grpc=use_grpc),
+            collection_name=collection_name,
+            embedding=embeddings,
+        )
+        
+        # Build dense retriever
+        dense_retriever = vector_store.as_retriever(
+            search_type=search_type,
+            search_kwargs=default_search_kwargs,
+        )
+        
         # Load documents for BM25
-        print("\n🔧 Building hybrid retriever...")
-        print("   Mode: Hybrid (Dense + BM25 with RRF)")
-        print(f"   Alpha: {alpha} (0=sparse only, 1=dense only)")
-        print(f"   RRF k: {rrf_k}")
         documents = load_documents_from_jsonl(chunks_file)
         
         # Import hybrid retriever
@@ -259,13 +302,30 @@ def build_retriever(
             rrf_k=rrf_k,
         )
         
-        print("✅ Hybrid retriever ready!")
+        print("✅ Custom hybrid retriever ready!")
         print(f"   Retriever type: {type(retriever).__name__}")
         print(f"   Top-k: {default_search_kwargs['k']}")
         
         return retriever
+    
     else:
         # Dense mode
+        print("\n🔧 Building dense retriever...")
+        print("   Mode: Dense (Vector similarity only)")
+        
+        # Initialize vector store
+        vector_store = QdrantVectorStore(
+            client=QdrantClient(path=qdrant_path, prefer_grpc=use_grpc),
+            collection_name=collection_name,
+            embedding=embeddings,
+        )
+        
+        # Build retriever
+        dense_retriever = vector_store.as_retriever(
+            search_type=search_type,
+            search_kwargs=default_search_kwargs,
+        )
+        
         print("✅ Dense retriever ready!")
         print(f"   Search type: {search_type}")
         print(f"   Search kwargs: {default_search_kwargs}")
@@ -332,26 +392,26 @@ def parse_args():
         "--mode",
         type=str,
         default=None,
-        choices=["dense", "hybrid"],
-        help="Retrieval mode (None=auto-detect from collection name)",
+        choices=["dense", "native_hybrid", "hybrid"],
+        help="Retrieval mode: dense, native_hybrid (Qdrant internal), hybrid (BM25+RRF), or None=auto-detect",
     )
     ap.add_argument(
         "--chunks_file",
         type=str,
         default="",
-        help="Path to JSONL chunks file (required for hybrid mode)",
+        help="Path to JSONL chunks file (required for custom hybrid mode only)",
     )
     ap.add_argument(
         "--alpha",
         type=float,
         default=0.5,
-        help="Hybrid mode weight: 0=sparse only, 1=dense only (default=0.5)",
+        help="Custom hybrid mode weight: 0=sparse only, 1=dense only (default=0.5)",
     )
     ap.add_argument(
         "--rrf_k",
         type=int,
         default=60,
-        help="RRF parameter for hybrid mode (default=60)",
+        help="RRF parameter for custom hybrid mode (default=60)",
     )
     ap.add_argument(
         "--query",
@@ -430,7 +490,9 @@ def main():
     else:
         print("\n💡 Tip: Dùng --query để test search")
         print("   Example: python build_retriever.py --collection <name> --query 'How to create events?'")
-        print("\n💡 For hybrid mode:")
+        print("\n💡 For native hybrid mode:")
+        print("   python build_retriever.py --collection <name>_native_hybrid --query 'test'")
+        print("\n💡 For custom hybrid mode:")
         print("   python build_retriever.py --collection <name>_hybrid --chunks_file data/chunks/<file>.jsonl --query 'test'")
 
 

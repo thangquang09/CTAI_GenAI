@@ -7,10 +7,11 @@ from typing import Any, Dict, Iterable, List, Optional
 
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, models
+from qdrant_client.http.models import Distance, SparseVectorParams, VectorParams
 from tqdm import tqdm
 
-from langchain_qdrant import QdrantVectorStore
+from langchain_qdrant import FastEmbedSparse, QdrantVectorStore, RetrievalMode
 
 
 def sanitize_collection_name(name: str) -> str:
@@ -74,9 +75,20 @@ def build_qdrant_local(
     recreate: bool = False,
     batch_size: int = 64,
     use_grpc: bool = False,
+    mode: str = "dense",
 ):
     """
     Build Qdrant vector store locally using the new langchain-qdrant API.
+    
+    Args:
+        docs: List of Document objects to index
+        collection_name: Name of the Qdrant collection
+        qdrant_path: Path to Qdrant storage directory
+        embedding_model: HuggingFace embedding model name
+        recreate: Whether to delete and recreate collection
+        batch_size: Batch size for indexing
+        use_grpc: Whether to use gRPC for local client
+        mode: Indexing mode - "dense" (vector only) or "native_hybrid" (dense + sparse BM25)
     """
     os.makedirs(qdrant_path, exist_ok=True)
 
@@ -84,6 +96,13 @@ def build_qdrant_local(
     embeddings = HuggingFaceEmbeddings(
         model_name=embedding_model, encode_kwargs={"normalize_embeddings": True}
     )
+    
+    # Initialize sparse embeddings for native hybrid mode
+    sparse_embeddings = None
+    if mode == "native_hybrid":
+        print("🔧 Initializing sparse embeddings (BM25)...")
+        sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
+        print("✅ Sparse embeddings initialized")
 
     # Delete collection if recreate flag is set
     if recreate:
@@ -104,9 +123,8 @@ def build_qdrant_local(
         print("No documents to index.")
         return
 
-    print(
-        f"Indexing {n} chunks into Qdrant collection '{collection_name}' at '{qdrant_path}'"
-    )
+    print(f"Indexing {n} chunks into Qdrant collection '{collection_name}' at '{qdrant_path}'")
+    print(f"Mode: {mode}")
 
     # Prepare IDs for documents
     # Qdrant requires UUIDs for IDs, so we generate them from chunk_id using UUID5
@@ -117,31 +135,86 @@ def build_qdrant_local(
         for i, d in enumerate(docs)
     ]
 
-    # Create vector store and collection using from_documents
-    # This will automatically create the collection with proper vector config
-    vector_store = None
-    with tqdm(total=n, desc="Creating collection & indexing", unit="doc") as pbar:
-        # Process in batches to show progress
-        for start in range(0, n, batch_size):
-            end = min(start + batch_size, n)
-            batch_docs = docs[start:end]
-            batch_ids = ids[start:end]
-
-            if start == 0:
-                # First batch: create the vector store and collection
-                vector_store = QdrantVectorStore.from_documents(
-                    documents=batch_docs,
-                    embedding=embeddings,
-                    ids=batch_ids,
-                    collection_name=collection_name,
-                    path=qdrant_path,
-                    prefer_grpc=use_grpc,
-                )
-            else:
-                # Subsequent batches: add to existing collection
+    # Native hybrid mode requires manual collection creation
+    if mode == "native_hybrid":
+        print("\n🔧 Creating collection with dense + sparse vectors...")
+        
+        # Get vector size by embedding a sample text
+        sample_text = docs[0].page_content if docs else "sample text"
+        sample_embedding = embeddings.embed_query(sample_text)
+        vector_size = len(sample_embedding)
+        print(f"   Dense vector size: {vector_size}")
+        
+        # Create client and collection manually
+        client = QdrantClient(path=qdrant_path, prefer_grpc=use_grpc)
+        
+        # Check if collection already exists
+        try:
+            existing_collection = client.get_collection(collection_name)
+            print(f"✅ Collection already exists: {collection_name}")
+            print(f"   Vectors count: {client.count(collection_name).count}")
+        except Exception:
+            # Collection doesn't exist, create it
+            client.create_collection(
+                collection_name=collection_name,
+                vectors_config={"dense": VectorParams(size=vector_size, distance=Distance.COSINE)},
+                sparse_vectors_config={
+                    "sparse": SparseVectorParams(index=models.SparseIndexParams(on_disk=False))
+                },
+            )
+            print(f"✅ Collection created: {collection_name}")
+            print(f"   Dense vector: size={vector_size}, distance=COSINE")
+            print(f"   Sparse vector: BM25, in-memory")
+        
+        # Close client
+        client.close()
+        
+        # Create vector store with native hybrid mode
+        vector_store = QdrantVectorStore(
+            client=QdrantClient(path=qdrant_path, prefer_grpc=use_grpc),
+            collection_name=collection_name,
+            embedding=embeddings,
+            sparse_embedding=sparse_embeddings,
+            retrieval_mode=RetrievalMode.HYBRID,
+            vector_name="dense",
+            sparse_vector_name="sparse",
+        )
+        
+        # Add documents in batches
+        with tqdm(total=n, desc="Indexing documents (native hybrid)", unit="doc") as pbar:
+            for start in range(0, n, batch_size):
+                end = min(start + batch_size, n)
+                batch_docs = docs[start:end]
+                batch_ids = ids[start:end]
+                
                 vector_store.add_documents(documents=batch_docs, ids=batch_ids)
+                pbar.update(end - start)
+    
+    else:
+        # Dense mode (original logic)
+        vector_store = None
+        with tqdm(total=n, desc="Creating collection & indexing", unit="doc") as pbar:
+            # Process in batches to show progress
+            for start in range(0, n, batch_size):
+                end = min(start + batch_size, n)
+                batch_docs = docs[start:end]
+                batch_ids = ids[start:end]
 
-            pbar.update(end - start)
+                if start == 0:
+                    # First batch: create the vector store and collection
+                    vector_store = QdrantVectorStore.from_documents(
+                        documents=batch_docs,
+                        embedding=embeddings,
+                        ids=batch_ids,
+                        collection_name=collection_name,
+                        path=qdrant_path,
+                        prefer_grpc=use_grpc,
+                    )
+                else:
+                    # Subsequent batches: add to existing collection
+                    vector_store.add_documents(documents=batch_docs, ids=batch_ids)
+
+                pbar.update(end - start)
 
     # Print collection info using the vector_store's client
     if vector_store:
@@ -188,6 +261,13 @@ def parse_args():
     ap.add_argument(
         "--grpc", action="store_true", help="Dùng gRPC local (thường không cần)"
     )
+    ap.add_argument(
+        "--mode",
+        type=str,
+        default="dense",
+        choices=["dense", "native_hybrid"],
+        help="Indexing mode: dense (vector only) or native_hybrid (dense + sparse BM25)",
+    )
     return ap.parse_args()
 
 
@@ -213,10 +293,15 @@ def main():
         if embedding_safe not in collection_name:
             collection_name = f"{collection_name}_{embedding_safe}"
     
+    # Add mode suffix to collection name
+    if args.mode == "native_hybrid":
+        collection_name = f"{collection_name}_native_hybrid"
+    
     # Sanitize final collection name
     collection_name = sanitize_collection_name(collection_name)
     
     print(f"📦 Collection name: {collection_name}")
+    print(f"📦 Indexing mode: {args.mode}")
 
     docs = make_documents(args.chunks, limit=limit)
     build_qdrant_local(
@@ -227,6 +312,7 @@ def main():
         recreate=args.recreate,
         batch_size=args.batch_size,
         use_grpc=args.grpc,
+        mode=args.mode,
     )
 
 

@@ -1,0 +1,75 @@
+[
+    {
+        "strategy": "recursive",
+        "chunk_size": 380,
+        "overlap": 50,
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "mode": "native_hybrid",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    },
+    {
+        "strategy": "recursive",
+        "chunk_size": 380,
+        "overlap": 50,
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "mode": "dense",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    },
+    
+    {
+        "strategy": "recursive",
+        "chunk_size": 380,
+        "overlap": 50,
+        "embedding_model": "BAAI/bge-m3",
+        "mode": "dense",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    },
+    {
+        "strategy": "recursive",
+        "chunk_size": 380,
+        "overlap": 50,
+        "embedding_model": "BAAI/bge-m3",
+        "mode": "native_hybrid",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    },
+    {
+        "strategy": "token",
+        "chunk_size": 380,
+        "overlap": 50,
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "mode": "dense",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    },
+    {
+        "strategy": "token",
+        "chunk_size": 512,
+        "overlap": 64,
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "mode": "native_hybrid",
+        "top_k": 5,
+        "retrieve_k": 20,
+        "agg_mode": "max",
+        "cosine_threshold": 0.70,
+        "eval_method": "both"
+    }
+]
