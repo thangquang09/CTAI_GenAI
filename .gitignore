@@ -1,8 +1,9 @@
 sample_data/
 .config/
+.DS_Store
 
 haidm
 haidm.pub
 __pycache__/
 /data/chroma/
-data/
+
