@@ -9,6 +9,9 @@ def main():
         max_new_tokens=400,
         temperature=0.7,
         enable_thinking=False,  # keep simple
+        use_reranker=True,
+        reranker_model_name="BAAI/bge-reranker-base",
+        reranker_top_k=3,
     )
 
     rag = Qwen3RAGPipeline(cfg)
@@ -20,7 +23,12 @@ def main():
     print(result["answer"])
     print("\n=== USED CONTEXT DOC IDS ===")
     for d in result["docs"]:
-        print(d.metadata.get("doc_id"))
+        doc_id = d.metadata.get("doc_id")
+        score = d.metadata.get("rerank_score")
+        if score is not None:
+            print(f"{doc_id} (rerank={score:.4f})")
+        else:
+            print(doc_id)
 
 
 if __name__ == "__main__":

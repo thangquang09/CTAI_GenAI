@@ -6,6 +6,7 @@ from typing import List, Optional, Dict, Any
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from langchain_core.documents import Document
+from sentence_transformers import CrossEncoder
 
 import sys
 
@@ -21,6 +22,11 @@ class RAGConfig:
     max_new_tokens: int = 512
     temperature: float = 0.7
     enable_thinking: bool = False  # keep off for simple RAG, avoids <think> parsing
+    use_reranker: bool = True
+    reranker_model_name: Optional[str] = "BAAI/bge-reranker-base"
+    reranker_top_k: Optional[int] = None  # defaults to using all retrieved docs
+    reranker_max_length: int = 512
+    reranker_device: Optional[str] = None
 
     # You can tweak this prompt later for better performance
     system_prompt: str = (
@@ -56,6 +62,29 @@ class Qwen3RAGPipeline:
             dtype="auto",
             device_map="auto",
         )
+        self._init_reranker()
+
+    def _init_reranker(self) -> None:
+        """
+        Initialize the optional reranker model.
+
+        We use a cross-encoder (e.g., BAAI/bge-reranker-base) to rescore the retrieved
+        passages. This typically boosts precision by ensuring the highest-similarity
+        passages are fed to the generator.
+        """
+        if not self.config.use_reranker or not self.config.reranker_model_name:
+            self.reranker: Optional[CrossEncoder] = None
+            return
+
+        device = self.config.reranker_device
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        self.reranker = CrossEncoder(
+            self.config.reranker_model_name,
+            max_length=self.config.reranker_max_length,
+            device=device,
+        )
 
     # ----------------- RAG steps -----------------
 
@@ -65,6 +94,31 @@ class Qwen3RAGPipeline:
             search_type="similarity", search_kwargs={"k": k}
         )
         return retriever.invoke(question)
+
+    def _rerank_documents(
+        self, question: str, docs: List[Document], top_k: Optional[int] = None
+    ) -> List[Document]:
+        """
+        Optionally apply a cross-encoder reranker to reorder the retrieved docs.
+        """
+        if not self.reranker or len(docs) <= 1:
+            return docs
+
+        pairs = [[question, doc.page_content] for doc in docs]
+        scores = self.reranker.predict(pairs)
+
+        doc_scores = list(zip(docs, scores))
+        doc_scores.sort(key=lambda item: item[1], reverse=True)
+
+        cutoff = top_k or self.config.reranker_top_k
+        cutoff = cutoff or len(doc_scores)
+
+        reranked_docs: List[Document] = []
+        for doc, score in doc_scores[:cutoff]:
+            doc.metadata = dict(doc.metadata) if doc.metadata else {}
+            doc.metadata["rerank_score"] = float(score)
+            reranked_docs.append(doc)
+        return reranked_docs
 
     def _format_context(self, docs: List[Document]) -> str:
         """
@@ -159,6 +213,11 @@ class Qwen3RAGPipeline:
             }
         """
         docs = self.retrieve(question, k=top_k)
+        docs = self._rerank_documents(
+            question,
+            docs,
+            top_k=self.config.reranker_top_k,
+        )
         messages = self._build_messages(question, docs)
         answer = self._generate(
             messages,

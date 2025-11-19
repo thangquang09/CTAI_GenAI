@@ -54,6 +54,12 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
         top_k=args.top_k,
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
+        use_reranker=(not args.disable_reranker)
+        and bool(args.reranker_model_name),
+        reranker_model_name=args.reranker_model_name,
+        reranker_top_k=args.reranker_top_k,
+        reranker_max_length=args.reranker_max_length,
+        reranker_device=args.reranker_device,
     )
     rag = Qwen3RAGPipeline(rag_cfg)
 
@@ -161,6 +167,35 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--max-new-tokens", type=int, default=400)
     parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument(
+        "--reranker-model-name",
+        type=str,
+        default="BAAI/bge-reranker-base",
+        help="HF identifier for the cross-encoder reranker (set empty string to skip).",
+    )
+    parser.add_argument(
+        "--reranker-top-k",
+        type=int,
+        default=None,
+        help="Limit how many reranked docs to pass to the generator (default: use all).",
+    )
+    parser.add_argument(
+        "--reranker-max-length",
+        type=int,
+        default=512,
+        help="Max token length for reranker inputs.",
+    )
+    parser.add_argument(
+        "--reranker-device",
+        type=str,
+        default=None,
+        help="Optional torch device for the reranker (defaults to auto).",
+    )
+    parser.add_argument(
+        "--disable-reranker",
+        action="store_true",
+        help="Skip reranking entirely.",
+    )
     parser.add_argument(
         "--save-path",
         type=str,
