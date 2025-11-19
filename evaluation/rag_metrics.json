@@ -1,0 +1,8 @@
+{
+  "num_records": 200,
+  "num_with_ground_truth": 200,
+  "recall": 0.9566666666666667,
+  "precision": 0.223,
+  "hit_rate": 0.63,
+  "mrr": 0.4434166666666667
+}

@@ -1,0 +1,9 @@
+{
+  "summary": {
+    "num_samples": 200,
+    "exact_match": 0.0,
+    "containment": 0.0,
+    "similarity": 0.049964640949540846,
+    "retrieval_recall": 0.63
+  }
+}

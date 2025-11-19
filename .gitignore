@@ -1,0 +1,8 @@
+sample_data/
+.config/
+
+haidm
+haidm.pub
+__pycache__/
+/data/chroma/
+data/
