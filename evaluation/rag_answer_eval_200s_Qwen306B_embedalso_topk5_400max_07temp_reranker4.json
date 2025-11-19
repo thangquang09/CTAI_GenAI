@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "num_samples": 200,
+    "exact_match": 0.0,
+    "containment": 0.0,
+    "similarity": 0.045038648699393544,
+    "retrieval_recall": 0.515,
+    "recall@1": 0.2425,
+    "precision@1": 0.28,
+    "hit_rate@1": 0.28,
+    "mrr@1": 0.28,
+    "recall@3": 0.6175,
+    "precision@3": 0.23666666666666666,
+    "hit_rate@3": 0.515,
+    "mrr@3": 0.38333333333333336,
+    "recall@5": 0.6175,
+    "precision@5": 0.14200000000000002,
+    "hit_rate@5": 0.515,
+    "mrr@5": 0.38333333333333336,
+    "recall@10": 0.6175,
+    "precision@10": 0.07100000000000001,
+    "hit_rate@10": 0.515,
+    "mrr@10": 0.38333333333333336
+  }
+}

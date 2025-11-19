@@ -3,11 +3,12 @@
 
 
 python scripts/ingest_kb.py \
-    --method token \
+    --method recursive \
     --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
     --embedding-dim 1024 \
     --chunk-batch-size 128 \
     --chroma-batch-size 4096
+
 # --method recursive \ or --method semantic or --method token
 
 # ============================================
