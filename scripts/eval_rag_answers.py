@@ -11,6 +11,7 @@ from tqdm import tqdm
 from rag_wixqa.data.load_wixqa import load_qa_pairs
 from rag_wixqa.data.models import QAPair
 from rag_wixqa.rag.pipeline import Qwen3RAGPipeline, RAGConfig
+from rag_wixqa.config import emb_cfg
 
 
 def _normalize(text: str) -> str:
@@ -54,6 +55,8 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
         top_k=args.top_k,
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
+        embedding_model_name=args.embedding_model_name,
+        embedding_dim=args.embedding_dim,
         use_reranker=(not args.disable_reranker)
         and bool(args.reranker_model_name),
         reranker_model_name=args.reranker_model_name,
@@ -167,6 +170,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--max-new-tokens", type=int, default=400)
     parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument(
+        "--embedding-model-name",
+        type=str,
+        default=emb_cfg.model_name,
+        help="HF embedding model to use for retrieval.",
+    )
+    parser.add_argument(
+        "--embedding-dim",
+        type=int,
+        default=emb_cfg.dim,
+        help="Embedding dimension (for bookkeeping).",
+    )
     parser.add_argument(
         "--reranker-model-name",
         type=str,

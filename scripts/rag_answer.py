@@ -9,6 +9,8 @@ def main():
         max_new_tokens=400,
         temperature=0.7,
         enable_thinking=False,  # keep simple
+        embedding_model_name="Qwen/Qwen3-Embedding-0.6B",
+        embedding_dim=1024,
         use_reranker=True,
         reranker_model_name="BAAI/bge-reranker-base",
         reranker_top_k=3,

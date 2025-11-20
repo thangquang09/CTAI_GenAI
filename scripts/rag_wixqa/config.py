@@ -16,8 +16,8 @@ class HFConfigs(BaseModel):
 
 
 class EmbeddingConfig(BaseModel):
-    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
-    dim: int = 384
+    model_name: str = "Qwen/Qwen3-Embedding-0.6B"
+    dim: int = 1024
 
 
 class ChunkingConfig(BaseModel):

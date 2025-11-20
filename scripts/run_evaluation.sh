@@ -7,16 +7,18 @@
 # Basic evaluation with reranker (default settings)
 python scripts/eval_rag_answers.py \
     --split train \
-    --sample-size 50 \
+    --sample-size 200 \
     --collection-name wixqa_recursive_chunks \
     --model-name "Qwen/Qwen3-0.6B" \
+    --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
+    --embedding-dim 1024 \
     --top-k 5 \
     --max-new-tokens 400 \
     --temperature 0.7 \
     --reranker-model-name "BAAI/bge-reranker-base" \
     --reranker-top-k 3 \
-    --results-path evaluation/rag_results.jsonl \
-    --save-path evaluation/rag_answer_eval.json \
+    --results-path evaluation/rag_results_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.jsonl \
+    --save-path evaluation/rag_answer_eval_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.json \
     --overwrite-results
 
 # ============================================
@@ -28,6 +30,8 @@ python scripts/eval_rag_answers.py \
     --sample-size 50 \
     --collection-name wixqa_recursive_chunks \
     --model-name "Qwen/Qwen3-0.6B" \
+    --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
+    --embedding-dim 1024 \
     --top-k 5 \
     --max-new-tokens 400 \
     --temperature 0.7 \
@@ -41,7 +45,7 @@ python scripts/eval_rag_answers.py \
 # ============================================
 # Compute retrieval metrics from the results
 python scripts/compute_rag_metrics.py \
-    --results-path evaluation/rag_results.jsonl \
+    --results-path evaluation/rag_results_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.jsonl \
     --save-path evaluation/rag_metrics.json
 
 # ============================================
@@ -53,6 +57,8 @@ python scripts/eval_rag_answers.py \
     --sample-size 0 \
     --collection-name wixqa_recursive_chunks \
     --model-name "Qwen/Qwen3-0.6B" \
+    --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
+    --embedding-dim 1024 \
     --top-k 10 \
     --reranker-model-name "BAAI/bge-reranker-base" \
     --reranker-top-k 5 \

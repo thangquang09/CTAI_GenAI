@@ -22,6 +22,8 @@ class RAGConfig:
     max_new_tokens: int = 512
     temperature: float = 0.7
     enable_thinking: bool = False  # keep off for simple RAG, avoids <think> parsing
+    embedding_model_name: Optional[str] = None
+    embedding_dim: Optional[int] = None
     use_reranker: bool = True
     reranker_model_name: Optional[str] = "BAAI/bge-reranker-base"
     reranker_top_k: Optional[int] = None  # defaults to using all retrieved docs
@@ -48,7 +50,10 @@ class Qwen3RAGPipeline:
         self.config = config or RAGConfig()
 
         # --- Load vector store ---
-        self.vectorstore = load_chroma_collection(self.config.collection_name)
+        self.vectorstore = load_chroma_collection(
+            self.config.collection_name,
+            embedding_model_name=self.config.embedding_model_name,
+        )
         self.retriever = self.vectorstore.as_retriever(
             search_type="similarity",
             search_kwargs={"k": self.config.top_k},

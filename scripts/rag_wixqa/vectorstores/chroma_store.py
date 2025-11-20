@@ -4,7 +4,7 @@ import chromadb
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
-from ..embeddings.embedding_models import get_default_embedding
+from ..embeddings.embedding_models import build_embedding
 from ..config import paths
 from ..chunking.strategies import Chunk
 
@@ -29,8 +29,9 @@ def _chunks_to_documents(chunks: List[Chunk]) -> List[Document]:
 def build_chroma_from_chunks(
     chunks: List[Chunk],
     collection_name: str,
+    embedding_model_name: str | None = None,
 ) -> Chroma:
-    embedding = get_default_embedding()
+    embedding = build_embedding(embedding_model_name)
 
     client = chromadb.PersistentClient(
         path=str(paths.chroma_root),
@@ -48,8 +49,11 @@ def build_chroma_from_chunks(
     return vectorstore
 
 
-def load_chroma_collection(collection_name: str) -> Chroma:
-    embedding = get_default_embedding()
+def load_chroma_collection(
+    collection_name: str,
+    embedding_model_name: str | None = None,
+) -> Chroma:
+    embedding = build_embedding(embedding_model_name)
     client = chromadb.PersistentClient(
         path=str(paths.chroma_root),
         settings=Settings(anonymized_telemetry=False),
