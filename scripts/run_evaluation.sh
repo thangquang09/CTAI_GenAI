@@ -1,6 +1,15 @@
 #!/bin/bash
 # Example commands to run RAG evaluation and compute metrics
 
+
+python scripts/ingest_kb.py \
+    --method recursive \
+    --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
+    --embedding-dim 1024 \
+    --chunk-batch-size 128 \
+    --chroma-batch-size 1024
+
+
 # ============================================
 # 1. Run eval_rag_answers.py with reranker
 # ============================================
