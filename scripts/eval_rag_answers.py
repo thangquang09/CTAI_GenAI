@@ -4,7 +4,7 @@ import random
 from difflib import SequenceMatcher
 from pathlib import Path
 from statistics import mean
-from typing import Dict, List, Optional
+from typing import Dict, Iterable, List, Optional, Sequence
 
 from tqdm import tqdm
 
@@ -45,9 +45,54 @@ def sample_qa_pairs(qa_pairs: List[QAPair], sample_size: Optional[int]) -> List[
     return random.sample(qa_pairs, sample_size)
 
 
+def _compute_retrieval_metrics_at_k(
+    retrieved_ids: List[str], 
+    ground_truth_ids: List[str], 
+    k_values: List[int]
+) -> Dict[str, float]:
+    """Compute retrieval metrics at different k values."""
+    if not ground_truth_ids:
+        return {}
+    
+    relevant_set = set(ground_truth_ids)
+    metrics: Dict[str, float] = {}
+    
+    for k in k_values:
+        retrieved_at_k = retrieved_ids[:k]
+        hits_at_k = [doc_id for doc_id in retrieved_at_k if doc_id in relevant_set]
+        
+        recall_at_k = len(hits_at_k) / len(ground_truth_ids) if ground_truth_ids else 0.0
+        precision_at_k = len(hits_at_k) / k if k > 0 else 0.0
+        hit_at_k = 1.0 if hits_at_k else 0.0
+        
+        mrr_at_k = 0.0
+        for rank, doc_id in enumerate(retrieved_at_k, start=1):
+            if doc_id in relevant_set:
+                mrr_at_k = 1.0 / rank
+                break
+        
+        metrics[f"recall@{k}"] = recall_at_k
+        metrics[f"precision@{k}"] = precision_at_k
+        metrics[f"hit_rate@{k}"] = hit_at_k
+        metrics[f"mrr@{k}"] = mrr_at_k
+    
+    return metrics
+
+
+def _batched(seq: Sequence[QAPair], batch_size: Optional[int]) -> Iterable[List[QAPair]]:
+    if not batch_size or batch_size <= 0 or batch_size >= len(seq):
+        yield list(seq)
+        return
+    for idx in range(0, len(seq), batch_size):
+        yield list(seq[idx : idx + batch_size])
+
+
 def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
     qa_pairs = load_qa_pairs(split=args.split)
     qa_pairs = sample_qa_pairs(qa_pairs, args.sample_size)
+    total_questions = len(qa_pairs)
+    
+    k_values = args.k_values or [1, 3, 5, 10]
 
     rag_cfg = RAGConfig(
         collection_name=args.collection_name,
@@ -67,6 +112,7 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
     rag = Qwen3RAGPipeline(rag_cfg)
 
     per_question_metrics: List[Dict[str, float]] = []
+    per_question_retrieval_metrics: List[Dict[str, float]] = []
     retrieval_hits = 0
     retrieval_total = 0
 
@@ -77,41 +123,61 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
         mode = "w" if args.overwrite_results else "a"
         results_file = results_path.open(mode, encoding="utf-8")
 
+    batch_size = args.batch_size
+
     try:
-        for qa in tqdm(qa_pairs, desc="Evaluating RAG answers"):
-            result = rag.answer(
-                qa.question,
-                top_k=args.top_k,
-                max_new_tokens=args.max_new_tokens,
-                temperature=args.temperature,
-                return_docs=True,
-            )
+        with tqdm(
+            total=total_questions,
+            desc="Evaluating RAG answers",
+            unit="qa",
+        ) as progress:
+            for batch in _batched(qa_pairs, batch_size):
+                for qa in batch:
+                    result = rag.answer(
+                        qa.question,
+                        top_k=args.top_k,
+                        max_new_tokens=args.max_new_tokens,
+                        temperature=args.temperature,
+                        return_docs=True,
+                    )
 
-            answer = result["answer"]
-            metrics = compare_answer(answer, qa.answer)
-            per_question_metrics.append(metrics)
+                    answer = result["answer"]
+                    metrics = compare_answer(answer, qa.answer)
+                    per_question_metrics.append(metrics)
 
-            docs = result.get("docs") or []
-            retrieved_ids_ordered = [d.metadata.get("doc_id") for d in docs]
-            if qa.kb_ids:
-                retrieval_total += 1
-                retrieved_ids_set = {doc_id for doc_id in retrieved_ids_ordered if doc_id}
-                if retrieved_ids_set & set(qa.kb_ids):
-                    retrieval_hits += 1
+                    docs = result.get("docs") or []
+                    retrieved_ids_ordered = [d.metadata.get("doc_id") for d in docs]
+                    
+                    # Compute retrieval metrics at k
+                    retrieval_metrics = _compute_retrieval_metrics_at_k(
+                        retrieved_ids_ordered, 
+                        qa.kb_ids or [], 
+                        k_values
+                    )
+                    if retrieval_metrics:
+                        per_question_retrieval_metrics.append(retrieval_metrics)
+                    
+                    if qa.kb_ids:
+                        retrieval_total += 1
+                        retrieved_ids_set = {doc_id for doc_id in retrieved_ids_ordered if doc_id}
+                        if retrieved_ids_set & set(qa.kb_ids):
+                            retrieval_hits += 1
 
-            if results_file:
-                record = {
-                    "question": qa.question,
-                    "reference_answer": qa.answer,
-                    "predicted_answer": answer,
-                    "metrics": metrics,
-                    "retrieved_doc_ids": retrieved_ids_ordered,
-                    "ground_truth_ids": qa.kb_ids,
-                    "collection_name": args.collection_name,
-                    "model_name": args.model_name,
-                    "top_k": args.top_k,
-                }
-                results_file.write(json.dumps(record) + "\n")
+                    if results_file:
+                        record = {
+                            "question": qa.question,
+                            "reference_answer": qa.answer,
+                            "predicted_answer": answer,
+                            "metrics": metrics,
+                            "retrieval_metrics": retrieval_metrics,
+                            "retrieved_doc_ids": retrieved_ids_ordered,
+                            "ground_truth_ids": qa.kb_ids,
+                            "collection_name": args.collection_name,
+                            "model_name": args.model_name,
+                            "top_k": args.top_k,
+                        }
+                        results_file.write(json.dumps(record) + "\n")
+                    progress.update(1)
     finally:
         if results_file:
             results_file.close()
@@ -129,6 +195,20 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
         else 0.0,
         "retrieval_recall": retrieval_hits / retrieval_total if retrieval_total else 0.0,
     }
+    
+    # Aggregate @k metrics
+    if per_question_retrieval_metrics:
+        for k in k_values:
+            summary[f"recall@{k}"] = mean(m[f"recall@{k}"] for m in per_question_retrieval_metrics)
+            summary[f"precision@{k}"] = mean(m[f"precision@{k}"] for m in per_question_retrieval_metrics)
+            summary[f"hit_rate@{k}"] = mean(m[f"hit_rate@{k}"] for m in per_question_retrieval_metrics)
+            summary[f"mrr@{k}"] = mean(m[f"mrr@{k}"] for m in per_question_retrieval_metrics)
+    else:
+        for k in k_values:
+            summary[f"recall@{k}"] = 0.0
+            summary[f"precision@{k}"] = 0.0
+            summary[f"hit_rate@{k}"] = 0.0
+            summary[f"mrr@{k}"] = 0.0
 
     if args.save_path:
         save_path = Path(args.save_path)
@@ -138,10 +218,19 @@ def evaluate_rag_answers(args: argparse.Namespace) -> Dict[str, float]:
 
     print("\n=== RAG Evaluation Summary ===")
     print(f"Samples evaluated : {summary['num_samples']}")
+    print(f"\n--- Answer Quality Metrics ---")
     print(f"Exact match       : {summary['exact_match']:.3f}")
     print(f"Containment       : {summary['containment']:.3f}")
     print(f"Similarity        : {summary['similarity']:.3f}")
     print(f"Retrieval recall  : {summary['retrieval_recall']:.3f}")
+    
+    if per_question_retrieval_metrics:
+        print(f"\n--- Retrieval Metrics @k ---")
+        for k in k_values:
+            print(f"Recall@{k}           : {summary[f'recall@{k}']:.3f}")
+            print(f"Precision@{k}        : {summary[f'precision@{k}']:.3f}")
+            print(f"Hit rate@{k}         : {summary[f'hit_rate@{k}']:.3f}")
+            print(f"MRR@{k}              : {summary[f'mrr@{k}']:.3f}")
 
     return summary
 
@@ -227,6 +316,19 @@ def parse_args() -> argparse.Namespace:
         "--overwrite-results",
         action="store_true",
         help="Truncate the results file before writing new rows.",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=32,
+        help="Number of QA pairs to process per evaluation batch (sequential batches).",
+    )
+    parser.add_argument(
+        "--k-values",
+        type=int,
+        nargs="+",
+        default=[1, 3, 5, 10],
+        help="List of k values for @k metrics (e.g., --k-values 1 3 5 10).",
     )
     return parser.parse_args()
 

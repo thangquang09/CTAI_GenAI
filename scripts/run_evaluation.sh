@@ -3,12 +3,12 @@
 
 
 python scripts/ingest_kb.py \
-    --method recursive \
+    --method token \
     --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
     --embedding-dim 1024 \
     --chunk-batch-size 128 \
-    --chroma-batch-size 1024
-
+    --chroma-batch-size 4096
+# --method recursive \ or --method semantic or --method token
 
 # ============================================
 # 1. Run eval_rag_answers.py with reranker
@@ -21,11 +21,13 @@ python scripts/eval_rag_answers.py \
     --model-name "Qwen/Qwen3-0.6B" \
     --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
     --embedding-dim 1024 \
+    --batch-size 32 \
     --top-k 5 \
     --max-new-tokens 400 \
     --temperature 0.7 \
     --reranker-model-name "BAAI/bge-reranker-base" \
     --reranker-top-k 3 \
+    --k-values 1 3 5 10 \
     --results-path evaluation/rag_results_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.jsonl \
     --save-path evaluation/rag_answer_eval_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.json \
     --overwrite-results
@@ -41,10 +43,12 @@ python scripts/eval_rag_answers.py \
     --model-name "Qwen/Qwen3-0.6B" \
     --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
     --embedding-dim 1024 \
+    --batch-size 32 \
     --top-k 5 \
     --max-new-tokens 400 \
     --temperature 0.7 \
     --disable-reranker \
+    --k-values 1 3 5 10 \
     --results-path evaluation/rag_results_no_rerank.jsonl \
     --save-path evaluation/rag_answer_eval_no_rerank.json \
     --overwrite-results
@@ -55,7 +59,8 @@ python scripts/eval_rag_answers.py \
 # Compute retrieval metrics from the results
 python scripts/compute_rag_metrics.py \
     --results-path evaluation/rag_results_200s_Qwen306B_embedalso_topk5_400max_07temp_reranker3.jsonl \
-    --save-path evaluation/rag_metrics.json
+    --save-path evaluation/rag_metrics.json \
+    --k-values 1 3 5 10
 
 # ============================================
 # 4. Full evaluation (all samples, no sampling)
@@ -68,9 +73,11 @@ python scripts/eval_rag_answers.py \
     --model-name "Qwen/Qwen3-0.6B" \
     --embedding-model-name "Qwen/Qwen3-Embedding-0.6B" \
     --embedding-dim 1024 \
+    --batch-size 64 \
     --top-k 10 \
     --reranker-model-name "BAAI/bge-reranker-base" \
     --reranker-top-k 5 \
+    --k-values 1 3 5 10 \
     --results-path evaluation/rag_results_full.jsonl \
     --save-path evaluation/rag_answer_eval_full.json \
     --overwrite-results
@@ -78,5 +85,6 @@ python scripts/eval_rag_answers.py \
 # Then compute metrics:
 python scripts/compute_rag_metrics.py \
     --results-path evaluation/rag_results_full.jsonl \
-    --save-path evaluation/rag_metrics_full.json
+    --save-path evaluation/rag_metrics_full.json \
+    --k-values 1 3 5 10 20
 
